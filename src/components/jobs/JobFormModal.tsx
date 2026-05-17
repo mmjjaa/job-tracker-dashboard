@@ -26,6 +26,7 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
   const [isParsing, setIsParsing] = useState(false)
   const [parseError, setParseError] = useState('')
   const [parseSuccess, setParseSuccess] = useState(false)
+  const [parseResult, setParseResult] = useState<{ company: string; position: string; techStack: string[]; deadline: string | null } | null>(null)
 
   const handleParse = async () => {
     if (!rawText.trim()) {
@@ -35,8 +36,10 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
     setIsParsing(true)
     setParseError('')
     setParseSuccess(false)
+    setParseResult(null)
     try {
       const result = await parseJobPosting(rawUrl, rawText)
+      setParseResult(result)
       setForm((prev) => ({
         ...prev,
         company: result.company || prev.company,
@@ -115,8 +118,14 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
               />
             </label>
             {parseError && <p className="text-xs text-red-500 mb-2">{parseError}</p>}
-            {parseSuccess && (
-              <p className="text-xs text-green-600 mb-2">✅ 자동 입력 완료! 아래 내용을 확인하고 추가하세요.</p>
+            {parseSuccess && parseResult && (
+              <div className="mb-3 bg-green-50 border border-green-200 rounded-lg p-3 text-xs space-y-1">
+                <p className="font-semibold text-green-700 mb-2">✅ 분석 완료 — 아래 내용이 자동 입력됐습니다</p>
+                <p><span className="text-gray-500">회사명</span> <span className="font-medium text-gray-800">{parseResult.company || '추출 실패'}</span></p>
+                <p><span className="text-gray-500">포지션</span> <span className="font-medium text-gray-800">{parseResult.position || '추출 실패'}</span></p>
+                <p><span className="text-gray-500">기술스택</span> <span className="font-medium text-gray-800">{parseResult.techStack.length > 0 ? parseResult.techStack.join(', ') : '없음'}</span></p>
+                <p><span className="text-gray-500">마감일</span> <span className="font-medium text-gray-800">{parseResult.deadline || '없음'}</span></p>
+              </div>
             )}
             <button
               type="button"
