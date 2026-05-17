@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useJobStore } from '../../store/jobStore'
-import { parseJobPosting } from '../../api/claude'
+import { suggestTechStack } from '../../api/claude'
 import type { Job, JobStatus } from '../../types'
 
 const JOB_STATUSES: JobStatus[] = ['관심', '지원예정', '지원완료', '결과대기']
@@ -21,38 +21,23 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
     memo: job?.memo ?? '',
     status: (job?.status ?? '관심') as JobStatus,
   })
-  const [rawUrl, setRawUrl] = useState('')
-  const [rawText, setRawText] = useState('')
-  const [isParsing, setIsParsing] = useState(false)
-  const [parseError, setParseError] = useState('')
-  const [parseSuccess, setParseSuccess] = useState(false)
-  const [parseResult, setParseResult] = useState<{ company: string; position: string; techStack: string[]; deadline: string | null } | null>(null)
+  const [isSuggesting, setIsSuggesting] = useState(false)
+  const [suggestError, setSuggestError] = useState('')
 
-  const handleParse = async () => {
-    if (!rawText.trim()) {
-      setParseError('공고 텍스트를 붙여넣어 주세요')
+  const handleSuggest = async () => {
+    if (!form.company.trim() || !form.position.trim()) {
+      setSuggestError('회사명과 포지션을 먼저 입력해주세요')
       return
     }
-    setIsParsing(true)
-    setParseError('')
-    setParseSuccess(false)
-    setParseResult(null)
+    setIsSuggesting(true)
+    setSuggestError('')
     try {
-      const result = await parseJobPosting(rawUrl, rawText)
-      setParseResult(result)
-      setForm((prev) => ({
-        ...prev,
-        company: result.company || prev.company,
-        position: result.position || prev.position,
-        url: rawUrl || prev.url,
-        techStack: result.techStack.length > 0 ? result.techStack.join(', ') : prev.techStack,
-        deadline: result.deadline ?? prev.deadline,
-      }))
-      setParseSuccess(true)
+      const stack = await suggestTechStack(form.company, form.position)
+      setForm((prev) => ({ ...prev, techStack: stack.join(', ') }))
     } catch (e) {
-      setParseError(e instanceof Error ? e.message : '분석 실패')
+      setSuggestError(e instanceof Error ? e.message : '추천 실패')
     } finally {
-      setIsParsing(false)
+      setIsSuggesting(false)
     }
   }
 
@@ -80,65 +65,12 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl w-[520px] max-h-[90vh] overflow-y-auto shadow-xl">
-        {/* 헤더 */}
+      <div className="bg-white rounded-xl w-[480px] max-h-[90vh] overflow-y-auto shadow-xl">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white z-10">
           <h3 className="font-semibold text-gray-800">{job ? '공고 수정' : '공고 추가'}</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">
-            ×
-          </button>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">×</button>
         </div>
 
-        {/* AI 파싱 섹션 (추가 모드에서만 표시) */}
-        {!job && (
-          <div className="px-6 pt-5 pb-4 bg-indigo-50 border-b border-indigo-100">
-            <p className="text-xs font-semibold text-indigo-700 mb-3">✨ AI 자동 입력</p>
-            <label className="block mb-2">
-              <span className="text-xs font-medium text-gray-600">공고 URL (선택)</span>
-              <input
-                type="text"
-                value={rawUrl}
-                onChange={(e) => setRawUrl(e.target.value)}
-                placeholder="https://..."
-                className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
-              />
-            </label>
-            <label className="block mb-3">
-              <span className="text-xs font-medium text-gray-600">공고 텍스트 붙여넣기 *</span>
-              <textarea
-                value={rawText}
-                onChange={(e) => {
-                  setRawText(e.target.value)
-                  setParseSuccess(false)
-                  setParseError('')
-                }}
-                placeholder="채용 공고 페이지에서 텍스트를 전체 선택(Ctrl+A) 후 복사해서 붙여넣으세요..."
-                rows={4}
-                className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300 resize-none bg-white"
-              />
-            </label>
-            {parseError && <p className="text-xs text-red-500 mb-2">{parseError}</p>}
-            {parseSuccess && parseResult && (
-              <div className="mb-3 bg-green-50 border border-green-200 rounded-lg p-3 text-xs space-y-1">
-                <p className="font-semibold text-green-700 mb-2">✅ 분석 완료 — 아래 내용이 자동 입력됐습니다</p>
-                <p><span className="text-gray-500">회사명</span> <span className="font-medium text-gray-800">{parseResult.company || '추출 실패'}</span></p>
-                <p><span className="text-gray-500">포지션</span> <span className="font-medium text-gray-800">{parseResult.position || '추출 실패'}</span></p>
-                <p><span className="text-gray-500">기술스택</span> <span className="font-medium text-gray-800">{parseResult.techStack.length > 0 ? parseResult.techStack.join(', ') : '없음'}</span></p>
-                <p><span className="text-gray-500">마감일</span> <span className="font-medium text-gray-800">{parseResult.deadline || '없음'}</span></p>
-              </div>
-            )}
-            <button
-              type="button"
-              onClick={handleParse}
-              disabled={isParsing}
-              className="w-full py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-            >
-              {isParsing ? '분석 중...' : 'AI 분석하기'}
-            </button>
-          </div>
-        )}
-
-        {/* 수동 입력 폼 */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <label className="block">
@@ -173,13 +105,24 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <label className="block">
-              <span className="text-xs font-medium text-gray-600">기술스택 (쉼표 구분)</span>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-medium text-gray-600">기술스택 (쉼표 구분)</span>
+                <button
+                  type="button"
+                  onClick={handleSuggest}
+                  disabled={isSuggesting}
+                  className="text-xs text-indigo-600 hover:text-indigo-800 font-medium disabled:opacity-50"
+                >
+                  {isSuggesting ? '추천 중...' : '✨ AI 추천'}
+                </button>
+              </div>
               <input
                 value={form.techStack}
                 onChange={(e) => update('techStack', e.target.value)}
                 placeholder="React, TypeScript..."
-                className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
+                className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
               />
+              {suggestError && <p className="text-xs text-red-500 mt-1">{suggestError}</p>}
             </label>
             <label className="block">
               <span className="text-xs font-medium text-gray-600">마감일</span>
@@ -199,9 +142,7 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
               onChange={(e) => update('status', e.target.value)}
               className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
             >
-              {JOB_STATUSES.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
+              {JOB_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </label>
 

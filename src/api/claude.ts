@@ -1,33 +1,16 @@
-export interface ParsedJob {
-  company: string
-  position: string
-  techStack: string[]
-  deadline: string | null
-}
-
-export async function parseJobPosting(url: string, text: string): Promise<ParsedJob> {
+export async function suggestTechStack(company: string, position: string): Promise<string[]> {
   const apiKey = import.meta.env.VITE_CLAUDE_API_KEY
 
-  const prompt = `채용 공고에서 아래 정보를 추출해 JSON으로만 반환해줘. 다른 텍스트는 절대 출력하지 마.
+  const prompt = `회사: ${company}
+포지션: ${position}
 
-URL: ${url || '없음'}
+이 회사의 이 포지션에서 실제로 사용하는 기술스택을 추천해줘.
+해당 회사의 채용 공고, 기술 블로그, 실제 서비스 기반으로 추천.
 
-공고 내용:
-${text.slice(0, 3000)}
+JSON 배열로만 반환 (다른 텍스트 없이):
+["기술1", "기술2", "기술3"]
 
-반환 형식:
-{
-  "company": "회사명",
-  "position": "포지션명",
-  "techStack": ["기술1", "기술2"],
-  "deadline": "YYYY-MM-DD 또는 null"
-}
-
-규칙:
-- 회사명/포지션이 없으면 빈 문자열
-- 기술스택이 없으면 빈 배열
-- 마감일이 없거나 불명확하면 null
-- JSON만 출력`
+최대 8개.`
 
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -39,7 +22,7 @@ ${text.slice(0, 3000)}
     },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 400,
+      max_tokens: 200,
       messages: [{ role: 'user', content: prompt }],
     }),
   })
@@ -51,9 +34,7 @@ ${text.slice(0, 3000)}
 
   const data = await res.json()
   const content = data.content[0].text as string
-
-  const jsonMatch = content.match(/\{[\s\S]*\}/)
-  if (!jsonMatch) throw new Error('응답 파싱 실패')
-
-  return JSON.parse(jsonMatch[0]) as ParsedJob
+  const match = content.match(/\[[\s\S]*\]/)
+  if (!match) return []
+  return JSON.parse(match[0]) as string[]
 }
