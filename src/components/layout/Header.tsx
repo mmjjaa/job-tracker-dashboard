@@ -25,7 +25,7 @@ export default function Header({ onAddJob }: HeaderProps) {
         <button
           onClick={handleExport}
           className="text-gray-500 hover:text-gray-700 text-sm border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-          title="브리핑 스킬용 데이터 내보내기"
+          title="다운로드 후 프로젝트 루트 data/jobs.json 으로 저장하면 /briefing 스킬이 읽습니다"
         >
           내보내기
         </button>
