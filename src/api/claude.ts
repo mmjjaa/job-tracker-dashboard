@@ -29,12 +29,13 @@ ${text.slice(0, 3000)}
 - 마감일이 없거나 불명확하면 null
 - JSON만 출력`
 
-  const res = await fetch('/api/anthropic/v1/messages', {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'x-api-key': apiKey,
       'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
     },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
