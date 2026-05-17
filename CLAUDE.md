@@ -12,15 +12,15 @@
 
 ## 기술 스택
 
-| 영역 | 선택 |
-|------|------|
-| 번들러 | Vite + `@crxjs/vite-plugin` |
-| UI | React 18 + TypeScript |
-| 스타일 | Tailwind CSS v3 |
-| AI 파싱 | Claude API (`claude-haiku-4-5-20251001`) |
-| DB 저장 | Notion API v2022-06-28 |
-| 크롬 스토리지 | `chrome.storage.local` |
-| 패키지 매니저 | npm |
+| 영역          | 선택                                     |
+| ------------- | ---------------------------------------- |
+| 번들러        | Vite + `@crxjs/vite-plugin`              |
+| UI            | React 18 + TypeScript                    |
+| 스타일        | Tailwind CSS v3                          |
+| AI 파싱       | Claude API (`claude-haiku-4-5-20251001`) |
+| DB 저장       | Notion API v2022-06-28                   |
+| 크롬 스토리지 | `chrome.storage.local`                   |
+| 패키지 매니저 | npm                                      |
 
 ---
 
@@ -66,28 +66,28 @@ VITE_NOTION_DATABASE_ID=...
 
 ## 지원 사이트별 선택자 전략
 
-| 사이트 | 추출 전략 |
-|--------|-----------|
-| 원티드 | `document.querySelector('.JobDescription')` 우선, 없으면 `main` |
-| 링크드인 | `.jobs-description__content` |
-| 잡코리아 | `#jobDetailContainer` |
-| 사람인 | `#job-description-wrap` |
-| 기타 | `document.body.innerText` (폴백) |
+| 사이트   | 추출 전략                                                       |
+| -------- | --------------------------------------------------------------- |
+| 원티드   | `document.querySelector('.JobDescription')` 우선, 없으면 `main` |
+| 링크드인 | `.jobs-description__content`                                    |
+| 잡코리아 | `#jobDetailContainer`                                           |
+| 사람인   | `#job-description-wrap`                                         |
+| 기타     | `document.body.innerText` (폴백)                                |
 
 ---
 
 ## Notion DB 스키마
 
-| 속성명 | 타입 | 비고 |
-|--------|------|------|
-| 회사명 | title | |
-| 포지션 | rich_text | |
-| URL | url | |
-| 기술스택 | multi_select | AI 추출 |
-| 연봉 | rich_text | 없으면 "정보 없음" |
-| 지원현황 | select | 관심 / 지원예정 / 지원완료 / 결과대기 |
-| 마감일 | date | AI 추출, ISO 8601 |
-| 한줄메모 | rich_text | 사용자 입력 |
+| 속성명   | 타입         | 비고                                  |
+| -------- | ------------ | ------------------------------------- |
+| 회사명   | title        |                                       |
+| 포지션   | rich_text    |                                       |
+| URL      | url          |                                       |
+| 기술스택 | multi_select | AI 추출                               |
+| 연봉     | rich_text    | 없으면 "정보 없음"                    |
+| 지원현황 | select       | 관심 / 지원예정 / 지원완료 / 결과대기 |
+| 마감일   | date         | AI 추출, ISO 8601                     |
+| 한줄메모 | rich_text    | 사용자 입력                           |
 
 ---
 
@@ -107,6 +107,7 @@ background.ts →(응답)→        Popup.tsx
 전역 규칙과 동일: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`
 
 예:
+
 - `feat: content script 공고 텍스트 추출 구현`
 - `feat: Claude API 파싱 통합`
 - `feat: Notion DB 저장 구현`
