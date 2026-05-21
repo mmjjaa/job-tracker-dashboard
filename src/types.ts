@@ -1,5 +1,11 @@
 export type JobStatus = '관심' | '지원예정' | '지원완료' | '결과대기'
 
+export interface CoverLetterDraft {
+  motivation: string
+  competency: string
+  aspiration: string
+}
+
 export interface Job {
   id: string
   company: string
@@ -10,4 +16,5 @@ export interface Job {
   memo: string
   status: JobStatus
   createdAt: string
+  coverLetter?: CoverLetterDraft
 }

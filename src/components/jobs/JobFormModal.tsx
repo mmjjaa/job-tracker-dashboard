@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useJobStore } from '../../store/jobStore'
-import { suggestTechStack } from '../../api/claude'
+import { suggestTechStack, parseJobPosting } from '../../api/claude'
 import type { Job, JobStatus } from '../../types'
 
 const JOB_STATUSES: JobStatus[] = ['관심', '지원예정', '지원완료', '결과대기']
@@ -21,8 +21,44 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
     memo: job?.memo ?? '',
     status: (job?.status ?? '관심') as JobStatus,
   })
+  const [pasteText, setPasteText] = useState('')
+  const [isParsing, setIsParsing] = useState(false)
+  const [parseError, setParseError] = useState('')
+  const [parsedFields, setParsedFields] = useState<string[]>([])
   const [isSuggesting, setIsSuggesting] = useState(false)
   const [suggestError, setSuggestError] = useState('')
+
+  const handleParse = async () => {
+    if (!pasteText.trim()) {
+      setParseError('공고 텍스트를 붙여넣어 주세요')
+      return
+    }
+    setIsParsing(true)
+    setParseError('')
+    setParsedFields([])
+    try {
+      const result = await parseJobPosting(pasteText)
+      const filled: string[] = []
+      if (result.company) filled.push('회사명')
+      if (result.position) filled.push('포지션')
+      if (result.techStack?.length) filled.push('기술스택')
+      if (result.deadline) filled.push('마감일')
+      if (result.memo) filled.push('메모')
+      setForm((prev) => ({
+        ...prev,
+        company: result.company || prev.company,
+        position: result.position || prev.position,
+        techStack: result.techStack?.join(', ') || prev.techStack,
+        deadline: result.deadline || prev.deadline,
+        memo: result.memo || prev.memo,
+      }))
+      setParsedFields(filled)
+    } catch (e) {
+      setParseError(e instanceof Error ? e.message : '분석 실패')
+    } finally {
+      setIsParsing(false)
+    }
+  }
 
   const handleSuggest = async () => {
     if (!form.company.trim() || !form.position.trim()) {
@@ -64,14 +100,43 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
     setForm((prev) => ({ ...prev, [field]: value }))
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl w-[480px] max-h-[90vh] overflow-y-auto shadow-xl">
+    <div className="fixed inset-0 bg-black/40 flex items-end md:items-center justify-center z-50">
+      <div className="bg-white rounded-t-2xl md:rounded-xl w-full md:w-[480px] max-h-[92dvh] md:max-h-[90vh] overflow-y-auto shadow-xl">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white z-10">
           <h3 className="font-semibold text-gray-800">{job ? '공고 수정' : '공고 추가'}</h3>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">×</button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {/* 공고 텍스트 분석 섹션 */}
+          <div className="bg-indigo-50 rounded-xl p-4 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-indigo-700">✨ 공고 텍스트 붙여넣기 → AI 자동 분석</span>
+              {parsedFields.length > 0 && (
+                <span className="text-xs text-emerald-600 font-medium">
+                  ✅ {parsedFields.join(', ')} 자동 입력됨
+                </span>
+              )}
+            </div>
+            <textarea
+              value={pasteText}
+              onChange={(e) => setPasteText(e.target.value)}
+              placeholder="채용 공고 텍스트를 여기에 붙여넣으세요..."
+              rows={4}
+              className="w-full text-xs border border-indigo-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300 resize-none bg-white"
+            />
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleParse}
+                disabled={isParsing}
+                className="text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 disabled:opacity-50 font-medium"
+              >
+                {isParsing ? '분석 중...' : 'AI 분석'}
+              </button>
+              {parseError && <p className="text-xs text-red-500">{parseError}</p>}
+            </div>
+          </div>
           <div className="grid grid-cols-2 gap-4">
             <label className="block">
               <span className="text-xs font-medium text-gray-600">회사명 *</span>

@@ -1,6 +1,6 @@
 export default function Sidebar() {
   return (
-    <aside className="w-56 bg-gray-900 flex flex-col shrink-0">
+    <aside className="hidden md:flex w-56 bg-gray-900 flex-col shrink-0">
       <div className="p-6">
         <h1 className="text-white font-bold text-lg">Job Tracker</h1>
         <p className="text-gray-400 text-xs mt-1">취업 준비 대시보드</p>

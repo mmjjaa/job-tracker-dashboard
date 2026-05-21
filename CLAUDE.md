@@ -19,6 +19,7 @@
 | UI | React 18 + TypeScript |
 | 스타일 | Tailwind CSS v3 |
 | 상태관리 | Zustand (localStorage persist) |
+| AI | Claude API (claude-haiku-4-5) |
 | 패키지 매니저 | npm |
 
 ---
@@ -27,6 +28,8 @@
 
 ```
 src/
+├── api/
+│   └── claude.ts          # Claude API 호출 (파싱·추천·자소서)
 ├── components/
 │   ├── layout/
 │   │   ├── Header.tsx
@@ -37,9 +40,9 @@ src/
 │   └── jobs/
 │       ├── JobTable.tsx
 │       ├── JobFormModal.tsx
-│       └── StatusBadge.tsx
+│       └── CoverLetterModal.tsx
 ├── store/
-│   └── jobStore.ts
+│   └── jobStore.ts        # Zustand + localStorage
 ├── types.ts
 ├── App.tsx
 ├── main.tsx
@@ -58,8 +61,18 @@ npm run build
 
 ---
 
+## 환경변수
+
+```
+VITE_CLAUDE_API_KEY=sk-ant-...
+```
+
+루트에 `.env` 파일로 관리. 커밋 금지.
+
+---
+
 ## 주의사항
 
 - 데이터는 localStorage에만 저장 (서버/DB 없음)
 - Zustand persist 미들웨어로 새로고침 후에도 데이터 유지
-- 외부 API 호출 없음, 순수 프론트엔드 앱
+- Claude API는 브라우저에서 직접 호출 (anthropic-dangerous-direct-browser-access 헤더 사용)
