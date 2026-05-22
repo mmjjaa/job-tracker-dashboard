@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Sidebar from './components/layout/Sidebar'
 import Header from './components/layout/Header'
 import StatsSection from './components/dashboard/StatsSection'
+import ChartSection from './components/dashboard/ChartSection'
 import JobTable from './components/jobs/JobTable'
 import JobFormModal from './components/jobs/JobFormModal'
 import type { Job } from './types'
@@ -32,6 +33,7 @@ export default function App() {
         <Header onAddJob={handleAdd} />
         <main className="flex-1 overflow-y-auto p-6 space-y-6">
           <StatsSection />
+          <ChartSection />
           <JobTable onEdit={handleEdit} />
         </main>
       </div>
