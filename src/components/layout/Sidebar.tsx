@@ -1,4 +1,9 @@
-export default function Sidebar() {
+interface SidebarProps {
+  onSignOut: () => void
+  userEmail: string
+}
+
+export default function Sidebar({ onSignOut, userEmail }: SidebarProps) {
   return (
     <aside className="hidden md:flex w-56 bg-gray-900 flex-col shrink-0">
       <div className="p-6">
@@ -14,7 +19,15 @@ export default function Sidebar() {
           공고 관리
         </a>
       </nav>
-      <div className="p-4 text-gray-600 text-xs text-center">v1.0.0</div>
+      <div className="p-4 border-t border-gray-800">
+        <p className="text-gray-500 text-xs truncate mb-2">{userEmail}</p>
+        <button
+          onClick={onSignOut}
+          className="w-full text-left text-gray-400 hover:text-white text-xs py-1 transition-colors"
+        >
+          로그아웃
+        </button>
+      </div>
     </aside>
   )
 }
