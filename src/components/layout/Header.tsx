@@ -5,6 +5,7 @@ type ViewMode = 'table' | 'kanban'
 
 interface HeaderProps {
   onAddJob: () => void
+  onSearchJob: () => void
   view: ViewMode
   onViewChange: (v: ViewMode) => void
   userEmail: string
@@ -12,7 +13,7 @@ interface HeaderProps {
   onSignOut: () => void
 }
 
-export default function Header({ onAddJob, view, onViewChange, userEmail, isGuest, onSignOut }: HeaderProps) {
+export default function Header({ onAddJob, onSearchJob, view, onViewChange, userEmail, isGuest, onSignOut }: HeaderProps) {
   const jobs = useJobStore((s) => s.jobs)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -64,6 +65,13 @@ export default function Header({ onAddJob, view, onViewChange, userEmail, isGues
           className="hidden md:block text-gray-500 hover:text-gray-700 text-sm border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
         >
           내보내기
+        </button>
+
+        <button
+          onClick={onSearchJob}
+          className="hidden md:block text-gray-600 hover:text-indigo-600 text-sm border border-gray-200 px-3 py-2 rounded-lg hover:bg-indigo-50 transition-colors font-medium"
+        >
+          🔍 공고 검색
         </button>
 
         <button

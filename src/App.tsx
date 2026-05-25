@@ -10,6 +10,7 @@ import ChartSection from './components/dashboard/ChartSection'
 import JobTable from './components/jobs/JobTable'
 import KanbanBoard from './components/jobs/KanbanBoard'
 import JobFormModal from './components/jobs/JobFormModal'
+import JobSearchModal from './components/jobs/JobSearchModal'
 import type { Job } from './types'
 
 type ViewMode = 'table' | 'kanban'
@@ -23,6 +24,7 @@ export default function App() {
   const [authLoading, setAuthLoading] = useState(true)
   const [isGuest, setIsGuest] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [editingJob, setEditingJob] = useState<Job | null>(null)
   const [view, setView] = useState<ViewMode>(getInitialView)
   const fetchJobs = useJobStore((s) => s.fetchJobs)
@@ -44,9 +46,15 @@ export default function App() {
     if (session) fetchJobs()
   }, [session, fetchJobs])
 
+  const addJob = useJobStore((s) => s.addJob)
+
   const handleAdd = () => {
     setEditingJob(null)
     setIsModalOpen(true)
+  }
+
+  const handleSearchSelect = (job: Omit<Job, 'id' | 'createdAt'>) => {
+    addJob(job)
   }
 
   const handleEdit = (job: Job) => {
@@ -88,6 +96,7 @@ export default function App() {
       <div className="flex flex-col flex-1 min-w-0">
         <Header
           onAddJob={handleAdd}
+          onSearchJob={() => setIsSearchOpen(true)}
           view={view}
           onViewChange={handleViewChange}
           userEmail={isGuest ? '게스트' : (session?.user.email ?? '')}
@@ -105,6 +114,12 @@ export default function App() {
         </main>
       </div>
       {isModalOpen && <JobFormModal job={editingJob} onClose={handleClose} />}
+      {isSearchOpen && (
+        <JobSearchModal
+          onClose={() => setIsSearchOpen(false)}
+          onSelect={handleSearchSelect}
+        />
+      )}
     </div>
   )
 }
