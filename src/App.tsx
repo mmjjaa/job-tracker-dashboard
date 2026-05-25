@@ -86,7 +86,14 @@ export default function App() {
         isGuest={isGuest}
       />
       <div className="flex flex-col flex-1 min-w-0">
-        <Header onAddJob={handleAdd} view={view} onViewChange={handleViewChange} />
+        <Header
+          onAddJob={handleAdd}
+          view={view}
+          onViewChange={handleViewChange}
+          userEmail={isGuest ? '게스트' : (session?.user.email ?? '')}
+          isGuest={isGuest}
+          onSignOut={isGuest ? () => setIsGuest(false) : handleSignOut}
+        />
         <main className="flex-1 overflow-y-auto p-6 space-y-6">
           <StatsSection />
           <ChartSection />
