@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { fetchSeoulJobs, parseDeadline, type SeoulJob } from '../../api/seoulJobs'
+import { useJobStore } from '../../store/jobStore'
 import type { Job } from '../../types'
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
 const PAGE_SIZE = 100
 
 export default function JobSearchModal({ onClose, onSelect }: Props) {
+  const keywords = useJobStore((s) => s.keywords)
   const [jobs, setJobs] = useState<SeoulJob[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -24,16 +26,29 @@ export default function JobSearchModal({ onClose, onSelect }: Props) {
       .finally(() => setLoading(false))
   }, [])
 
-  const filtered = keyword.trim()
-    ? jobs.filter((j) => {
-        const q = keyword.toLowerCase()
-        return (
-          j.CMPNY_NM.toLowerCase().includes(q) ||
-          j.JO_SJ.toLowerCase().includes(q) ||
-          j.JOBCODE_NM.toLowerCase().includes(q)
-        )
-      })
-    : jobs
+  const matchesKeywords = (j: SeoulJob) => {
+    if (keywords.length === 0) return true
+    return keywords.some((kw) => {
+      const k = kw.toLowerCase()
+      return (
+        j.CMPNY_NM.toLowerCase().includes(k) ||
+        j.JO_SJ.toLowerCase().includes(k) ||
+        j.JOBCODE_NM.toLowerCase().includes(k) ||
+        j.DTY_CN.toLowerCase().includes(k)
+      )
+    })
+  }
+
+  const filtered = jobs.filter((j) => {
+    const matchesKw = matchesKeywords(j)
+    if (!keyword.trim()) return matchesKw
+    const q = keyword.toLowerCase()
+    const matchesSearch =
+      j.CMPNY_NM.toLowerCase().includes(q) ||
+      j.JO_SJ.toLowerCase().includes(q) ||
+      j.JOBCODE_NM.toLowerCase().includes(q)
+    return matchesKw && matchesSearch
+  })
 
   const handleAdd = (job: SeoulJob) => {
     const mapped: Omit<Job, 'id' | 'createdAt'> = {
@@ -60,6 +75,18 @@ export default function JobSearchModal({ onClose, onSelect }: Props) {
           </div>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">✕</button>
         </div>
+
+        {/* 구독 키워드 표시 */}
+        {keywords.length > 0 && (
+          <div className="px-5 py-2.5 bg-indigo-50 border-b border-indigo-100 shrink-0 flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-indigo-500 font-medium shrink-0">구독 필터:</span>
+            {keywords.map((kw) => (
+              <span key={kw} className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">
+                {kw}
+              </span>
+            ))}
+          </div>
+        )}
 
         {/* 검색창 */}
         <div className="p-4 border-b border-gray-100 shrink-0">

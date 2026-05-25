@@ -6,11 +6,14 @@ import type { Job, JobStatus } from '../types'
 interface JobStore {
   jobs: Job[]
   loading: boolean
+  keywords: string[]
   fetchJobs: () => Promise<void>
   addJob: (job: Omit<Job, 'id' | 'createdAt'>) => Promise<void>
   updateJob: (id: string, updates: Partial<Omit<Job, 'id' | 'createdAt'>>) => Promise<void>
   deleteJob: (id: string) => Promise<void>
   updateStatus: (id: string, status: JobStatus) => Promise<void>
+  addKeyword: (kw: string) => void
+  removeKeyword: (kw: string) => void
 }
 
 function toRow(job: Omit<Job, 'id' | 'createdAt'>, userId: string) {
@@ -52,6 +55,7 @@ export const useJobStore = create<JobStore>()(
     (set, get) => ({
       jobs: [],
       loading: false,
+      keywords: [],
 
       fetchJobs: async () => {
         const user = await getUser()
@@ -131,6 +135,18 @@ export const useJobStore = create<JobStore>()(
           .from('jobs').update({ status }).eq('id', id).select().single()
         if (!error && data)
           set((s) => ({ jobs: s.jobs.map((j) => (j.id === id ? fromRow(data) : j)) }))
+      },
+
+      addKeyword: (kw) => {
+        const trimmed = kw.trim()
+        if (!trimmed) return
+        set((s) => ({
+          keywords: s.keywords.includes(trimmed) ? s.keywords : [...s.keywords, trimmed],
+        }))
+      },
+
+      removeKeyword: (kw) => {
+        set((s) => ({ keywords: s.keywords.filter((k) => k !== kw) }))
       },
 
       // persist 미들웨어가 사용하지만 직접 호출은 안 함
