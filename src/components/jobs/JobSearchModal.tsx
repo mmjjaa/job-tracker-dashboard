@@ -8,7 +8,7 @@ interface Props {
   onSelect: (job: Omit<Job, 'id' | 'createdAt'>) => void
 }
 
-const PAGE_SIZE = 100
+const PAGE_SIZE = 1000
 
 export default function JobSearchModal({ onClose, onSelect }: Props) {
   const keywords = useJobStore((s) => s.keywords)
@@ -105,7 +105,7 @@ export default function JobSearchModal({ onClose, onSelect }: Props) {
           {loading && (
             <div className="flex items-center justify-center py-16">
               <div className="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-              <span className="ml-2 text-sm text-gray-500">공고 불러오는 중...</span>
+              <span className="ml-2 text-sm text-gray-500">전체 공고 불러오는 중...</span>
             </div>
           )}
           {error && (
