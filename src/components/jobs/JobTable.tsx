@@ -64,7 +64,7 @@ export default function JobTable({ onEdit }: JobTableProps) {
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-center py-12 text-gray-400 text-sm">
+        <p className="text-center py-12 text-gray-500 text-sm font-medium">
           {jobs.length === 0 ? '공고를 추가해 보세요' : '검색 결과가 없습니다'}
         </p>
       ) : (
@@ -160,7 +160,7 @@ export default function JobTable({ onEdit }: JobTableProps) {
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100 text-gray-500">
+                <tr className="border-b border-gray-100 text-gray-600">
                   <th className="text-left px-4 py-3 font-medium w-28">회사명</th>
                   <th className="text-left px-4 py-3 font-medium w-32">포지션</th>
                   <th className="text-left px-4 py-3 font-medium">기술스택</th>
@@ -219,7 +219,7 @@ export default function JobTable({ onEdit }: JobTableProps) {
                     <td className={`px-4 py-3 ${getDdayColor(job.deadline)}`}>
                       {getDday(job.deadline)}
                     </td>
-                    <td className="px-4 py-3 text-gray-500 max-w-[180px] truncate">
+                    <td className="px-4 py-3 text-gray-600 max-w-[180px] truncate">
                       {job.memo || '-'}
                     </td>
                     <td className="px-4 py-3">

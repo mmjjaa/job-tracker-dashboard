@@ -21,10 +21,10 @@ export default function Sidebar({ onSignOut, userEmail, isGuest }: SidebarProps)
         </a>
       </nav>
       <div className="p-4 border-t border-gray-800">
-        <p className="text-gray-500 text-xs truncate mb-2">{userEmail}</p>
+        <p className="text-gray-300 text-xs truncate mb-2">{userEmail}</p>
         <button
           onClick={onSignOut}
-          className="w-full text-left text-gray-400 hover:text-white text-xs py-1 transition-colors"
+          className="w-full text-left text-gray-300 hover:text-white text-xs py-1 transition-colors"
         >
           {isGuest ? '로그인 화면으로' : '로그아웃'}
         </button>
