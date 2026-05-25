@@ -21,6 +21,7 @@ function getInitialView(): ViewMode {
 export default function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [authLoading, setAuthLoading] = useState(true)
+  const [isGuest, setIsGuest] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingJob, setEditingJob] = useState<Job | null>(null)
   const [view, setView] = useState<ViewMode>(getInitialView)
@@ -75,11 +76,15 @@ export default function App() {
     )
   }
 
-  if (!session) return <AuthPage />
+  if (!session && !isGuest) return <AuthPage onGuestStart={() => setIsGuest(true)} />
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
-      <Sidebar onSignOut={handleSignOut} userEmail={session.user.email ?? ''} />
+      <Sidebar
+        onSignOut={isGuest ? () => setIsGuest(false) : handleSignOut}
+        userEmail={isGuest ? '게스트 모드' : (session?.user.email ?? '')}
+        isGuest={isGuest}
+      />
       <div className="flex flex-col flex-1 min-w-0">
         <Header onAddJob={handleAdd} view={view} onViewChange={handleViewChange} />
         <main className="flex-1 overflow-y-auto p-6 space-y-6">

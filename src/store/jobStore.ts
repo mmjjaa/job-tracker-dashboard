@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import { supabase } from '../lib/supabase'
 import type { Job, JobStatus } from '../types'
 
@@ -41,73 +42,100 @@ function fromRow(row: Record<string, unknown>): Job {
   }
 }
 
-export const useJobStore = create<JobStore>()((set) => ({
-  jobs: [],
-  loading: false,
+async function getUser() {
+  const { data: { user } } = await supabase.auth.getUser()
+  return user
+}
 
-  fetchJobs: async () => {
-    set({ loading: true })
-    const { data, error } = await supabase
-      .from('jobs')
-      .select('*')
-      .order('created_at', { ascending: false })
-    if (!error && data) {
-      set({ jobs: data.map(fromRow) })
-    }
-    set({ loading: false })
-  },
+export const useJobStore = create<JobStore>()(
+  persist(
+    (set, get) => ({
+      jobs: [],
+      loading: false,
 
-  addJob: async (job) => {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-    const { data, error } = await supabase
-      .from('jobs')
-      .insert(toRow(job, user.id))
-      .select()
-      .single()
-    if (!error && data) {
-      set((s) => ({ jobs: [fromRow(data), ...s.jobs] }))
-    }
-  },
+      fetchJobs: async () => {
+        const user = await getUser()
+        if (!user) return
+        set({ loading: true })
+        const { data, error } = await supabase
+          .from('jobs')
+          .select('*')
+          .order('created_at', { ascending: false })
+        if (!error && data) set({ jobs: data.map(fromRow) })
+        set({ loading: false })
+      },
 
-  updateJob: async (id, updates) => {
-    const patch: Record<string, unknown> = {}
-    if (updates.company !== undefined) patch.company = updates.company
-    if (updates.position !== undefined) patch.position = updates.position
-    if (updates.url !== undefined) patch.url = updates.url
-    if (updates.techStack !== undefined) patch.tech_stack = updates.techStack
-    if (updates.deadline !== undefined) patch.deadline = updates.deadline
-    if (updates.memo !== undefined) patch.memo = updates.memo
-    if (updates.status !== undefined) patch.status = updates.status
-    if (updates.coverLetter !== undefined) patch.cover_letter = updates.coverLetter
+      addJob: async (job) => {
+        const user = await getUser()
+        if (!user) {
+          // 게스트: localStorage에만 저장
+          set((s) => ({
+            jobs: [
+              { ...job, id: crypto.randomUUID(), createdAt: new Date().toISOString() },
+              ...s.jobs,
+            ],
+          }))
+          return
+        }
+        const { data, error } = await supabase
+          .from('jobs')
+          .insert(toRow(job, user.id))
+          .select()
+          .single()
+        if (!error && data) set((s) => ({ jobs: [fromRow(data), ...s.jobs] }))
+      },
 
-    const { data, error } = await supabase
-      .from('jobs')
-      .update(patch)
-      .eq('id', id)
-      .select()
-      .single()
-    if (!error && data) {
-      set((s) => ({ jobs: s.jobs.map((j) => (j.id === id ? fromRow(data) : j)) }))
-    }
-  },
+      updateJob: async (id, updates) => {
+        const user = await getUser()
+        if (!user) {
+          set((s) => ({
+            jobs: s.jobs.map((j) => (j.id === id ? { ...j, ...updates } : j)),
+          }))
+          return
+        }
+        const patch: Record<string, unknown> = {}
+        if (updates.company !== undefined) patch.company = updates.company
+        if (updates.position !== undefined) patch.position = updates.position
+        if (updates.url !== undefined) patch.url = updates.url
+        if (updates.techStack !== undefined) patch.tech_stack = updates.techStack
+        if (updates.deadline !== undefined) patch.deadline = updates.deadline
+        if (updates.memo !== undefined) patch.memo = updates.memo
+        if (updates.status !== undefined) patch.status = updates.status
+        if (updates.coverLetter !== undefined) patch.cover_letter = updates.coverLetter
 
-  deleteJob: async (id) => {
-    const { error } = await supabase.from('jobs').delete().eq('id', id)
-    if (!error) {
-      set((s) => ({ jobs: s.jobs.filter((j) => j.id !== id) }))
-    }
-  },
+        const { data, error } = await supabase
+          .from('jobs').update(patch).eq('id', id).select().single()
+        if (!error && data)
+          set((s) => ({ jobs: s.jobs.map((j) => (j.id === id ? fromRow(data) : j)) }))
+      },
 
-  updateStatus: async (id, status) => {
-    const { data, error } = await supabase
-      .from('jobs')
-      .update({ status })
-      .eq('id', id)
-      .select()
-      .single()
-    if (!error && data) {
-      set((s) => ({ jobs: s.jobs.map((j) => (j.id === id ? fromRow(data) : j)) }))
-    }
-  },
-}))
+      deleteJob: async (id) => {
+        const user = await getUser()
+        if (!user) {
+          set((s) => ({ jobs: s.jobs.filter((j) => j.id !== id) }))
+          return
+        }
+        const { error } = await supabase.from('jobs').delete().eq('id', id)
+        if (!error) set((s) => ({ jobs: s.jobs.filter((j) => j.id !== id) }))
+      },
+
+      updateStatus: async (id, status) => {
+        const user = await getUser()
+        if (!user) {
+          set((s) => ({
+            jobs: s.jobs.map((j) => (j.id === id ? { ...j, status } : j)),
+          }))
+          return
+        }
+        const { data, error } = await supabase
+          .from('jobs').update({ status }).eq('id', id).select().single()
+        if (!error && data)
+          set((s) => ({ jobs: s.jobs.map((j) => (j.id === id ? fromRow(data) : j)) }))
+      },
+
+      // persist 미들웨어가 사용하지만 직접 호출은 안 함
+      _get: get,
+    }),
+    { name: 'job-tracker-guest-storage' }
+  )
+)

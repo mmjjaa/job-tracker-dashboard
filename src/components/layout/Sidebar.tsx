@@ -1,9 +1,10 @@
 interface SidebarProps {
   onSignOut: () => void
   userEmail: string
+  isGuest: boolean
 }
 
-export default function Sidebar({ onSignOut, userEmail }: SidebarProps) {
+export default function Sidebar({ onSignOut, userEmail, isGuest }: SidebarProps) {
   return (
     <aside className="hidden md:flex w-56 bg-gray-900 flex-col shrink-0">
       <div className="p-6">
@@ -25,7 +26,7 @@ export default function Sidebar({ onSignOut, userEmail }: SidebarProps) {
           onClick={onSignOut}
           className="w-full text-left text-gray-400 hover:text-white text-xs py-1 transition-colors"
         >
-          로그아웃
+          {isGuest ? '로그인 화면으로' : '로그아웃'}
         </button>
       </div>
     </aside>
