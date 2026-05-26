@@ -18,6 +18,7 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
     url: job?.url ?? '',
     techStack: job?.techStack.join(', ') ?? '',
     deadline: job?.deadline ?? '',
+    address: job?.address ?? '',
     memo: job?.memo ?? '',
     status: (job?.status ?? '관심') as JobStatus,
   })
@@ -85,6 +86,7 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
       url: form.url.trim(),
       techStack: form.techStack.split(',').map((s) => s.trim()).filter(Boolean),
       deadline: form.deadline || null,
+      address: form.address.trim(),
       memo: form.memo.trim(),
       status: form.status,
     }
@@ -164,6 +166,16 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
               value={form.url}
               onChange={(e) => update('url', e.target.value)}
               placeholder="https://..."
+              className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
+            />
+          </label>
+
+          <label className="block">
+            <span className="text-xs font-medium text-gray-600">회사 주소 (지도 표시용)</span>
+            <input
+              value={form.address}
+              onChange={(e) => update('address', e.target.value)}
+              placeholder="서울 강남구 테헤란로 123"
               className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
             />
           </label>

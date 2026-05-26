@@ -57,6 +57,7 @@ export default function JobSearchModal({ onClose, onSelect }: Props) {
       url: '',
       techStack: [],
       deadline: parseDeadline(job.RCEPT_CLOS_NM),
+      address: job.WORK_PARAR_BASS_ADRES_CN || '',
       memo: job.GUI_LN || '',
       status: '관심',
     }

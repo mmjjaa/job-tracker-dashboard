@@ -24,6 +24,7 @@ function toRow(job: Omit<Job, 'id' | 'createdAt'>, userId: string) {
     url: job.url,
     tech_stack: job.techStack,
     deadline: job.deadline ?? null,
+    address: job.address ?? '',
     memo: job.memo,
     status: job.status,
     cover_letter: job.coverLetter ?? null,
@@ -38,6 +39,7 @@ function fromRow(row: Record<string, unknown>): Job {
     url: (row.url as string) ?? '',
     techStack: (row.tech_stack as string[]) ?? [],
     deadline: (row.deadline as string) ?? null,
+    address: (row.address as string) ?? '',
     memo: (row.memo as string) ?? '',
     status: row.status as JobStatus,
     coverLetter: row.cover_letter as Job['coverLetter'],
@@ -103,6 +105,7 @@ export const useJobStore = create<JobStore>()(
         if (updates.url !== undefined) patch.url = updates.url
         if (updates.techStack !== undefined) patch.tech_stack = updates.techStack
         if (updates.deadline !== undefined) patch.deadline = updates.deadline
+        if (updates.address !== undefined) patch.address = updates.address
         if (updates.memo !== undefined) patch.memo = updates.memo
         if (updates.status !== undefined) patch.status = updates.status
         if (updates.coverLetter !== undefined) patch.cover_letter = updates.coverLetter

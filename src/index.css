@@ -9,3 +9,34 @@
 body {
   margin: 0;
 }
+
+/* react-calendar 커스텀 */
+.job-calendar .react-calendar {
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  font-family: inherit;
+  width: 280px;
+  padding: 8px;
+}
+.job-calendar .react-calendar__tile {
+  border-radius: 8px;
+  font-size: 13px;
+  padding: 6px 4px;
+}
+.job-calendar .react-calendar__tile--active {
+  background: #4F46E5 !important;
+  color: white;
+}
+.job-calendar .react-calendar__tile--now {
+  background: #EEF2FF;
+}
+.job-calendar .react-calendar__tile:hover {
+  background: #F3F4F6;
+}
+.job-calendar .react-calendar__navigation button {
+  font-size: 14px;
+  border-radius: 8px;
+}
+.job-calendar .react-calendar__navigation button:hover {
+  background: #F3F4F6;
+}

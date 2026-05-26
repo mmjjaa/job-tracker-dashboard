@@ -7,6 +7,8 @@ import Sidebar from './components/layout/Sidebar'
 import Header from './components/layout/Header'
 import StatsSection from './components/dashboard/StatsSection'
 import ChartSection from './components/dashboard/ChartSection'
+import CalendarSection from './components/dashboard/CalendarSection'
+import MapSection from './components/dashboard/MapSection'
 import JobTable from './components/jobs/JobTable'
 import KanbanBoard from './components/jobs/KanbanBoard'
 import JobFormModal from './components/jobs/JobFormModal'
@@ -106,6 +108,8 @@ export default function App() {
         <main className="flex-1 overflow-y-auto p-6 space-y-6">
           <StatsSection />
           <ChartSection />
+          <CalendarSection />
+          <MapSection />
           {view === 'table' ? (
             <JobTable onEdit={handleEdit} />
           ) : (

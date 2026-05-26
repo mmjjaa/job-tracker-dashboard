@@ -13,6 +13,7 @@ export interface Job {
   url: string
   techStack: string[]
   deadline: string | null
+  address: string
   memo: string
   status: JobStatus
   createdAt: string
