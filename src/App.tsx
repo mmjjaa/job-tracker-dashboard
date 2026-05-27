@@ -13,9 +13,11 @@ import JobTable from './components/jobs/JobTable'
 import KanbanBoard from './components/jobs/KanbanBoard'
 import JobFormModal from './components/jobs/JobFormModal'
 import JobSearchModal from './components/jobs/JobSearchModal'
+import ProfileModal from './components/profile/ProfileModal'
 import type { Job } from './types'
 
 type ViewMode = 'table' | 'kanban'
+type PageType = 'dashboard' | 'calendar' | 'jobs'
 
 function getInitialView(): ViewMode {
   return (localStorage.getItem('job-tracker-view') as ViewMode) ?? 'table'
@@ -29,6 +31,8 @@ export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [editingJob, setEditingJob] = useState<Job | null>(null)
   const [view, setView] = useState<ViewMode>(getInitialView)
+  const [page, setPage] = useState<PageType>('dashboard')
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
   const fetchJobs = useJobStore((s) => s.fetchJobs)
 
   useEffect(() => {
@@ -94,6 +98,9 @@ export default function App() {
         onSignOut={isGuest ? () => setIsGuest(false) : handleSignOut}
         userEmail={isGuest ? '게스트 모드' : (session?.user.email ?? '')}
         isGuest={isGuest}
+        page={page}
+        onPageChange={setPage}
+        onProfileOpen={() => setIsProfileOpen(true)}
       />
       <div className="flex flex-col flex-1 min-w-0">
         <Header
@@ -104,16 +111,27 @@ export default function App() {
           userEmail={isGuest ? '게스트' : (session?.user.email ?? '')}
           isGuest={isGuest}
           onSignOut={isGuest ? () => setIsGuest(false) : handleSignOut}
+          page={page}
         />
         <main className="flex-1 overflow-y-auto p-6 space-y-6">
-          <StatsSection />
-          <ChartSection />
-          <CalendarSection />
-          <MapSection />
-          {view === 'table' ? (
-            <JobTable onEdit={handleEdit} />
-          ) : (
-            <KanbanBoard onEdit={handleEdit} />
+          {page === 'dashboard' && (
+            <>
+              <StatsSection />
+              <ChartSection />
+              <MapSection />
+            </>
+          )}
+          {page === 'calendar' && (
+            <CalendarSection />
+          )}
+          {page === 'jobs' && (
+            <>
+              {view === 'table' ? (
+                <JobTable onEdit={handleEdit} />
+              ) : (
+                <KanbanBoard onEdit={handleEdit} />
+              )}
+            </>
           )}
         </main>
       </div>
@@ -124,6 +142,7 @@ export default function App() {
           onSelect={handleSearchSelect}
         />
       )}
+      {isProfileOpen && <ProfileModal onClose={() => setIsProfileOpen(false)} />}
     </div>
   )
 }

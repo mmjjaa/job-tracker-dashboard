@@ -3,10 +3,31 @@ import { persist } from 'zustand/middleware'
 import { supabase } from '../lib/supabase'
 import type { Job, JobStatus } from '../types'
 
+export interface UserProfile {
+  techStack: string[]
+  career: string
+  education: string
+  employmentType: string[]
+  salary: string
+  location: string
+  introduction: string
+}
+
+const DEFAULT_PROFILE: UserProfile = {
+  techStack: [],
+  career: '',
+  education: '',
+  employmentType: [],
+  salary: '',
+  location: '',
+  introduction: '',
+}
+
 interface JobStore {
   jobs: Job[]
   loading: boolean
   keywords: string[]
+  profile: UserProfile
   fetchJobs: () => Promise<void>
   addJob: (job: Omit<Job, 'id' | 'createdAt'>) => Promise<void>
   updateJob: (id: string, updates: Partial<Omit<Job, 'id' | 'createdAt'>>) => Promise<void>
@@ -14,6 +35,7 @@ interface JobStore {
   updateStatus: (id: string, status: JobStatus) => Promise<void>
   addKeyword: (kw: string) => void
   removeKeyword: (kw: string) => void
+  updateProfile: (p: UserProfile) => void
 }
 
 function toRow(job: Omit<Job, 'id' | 'createdAt'>, userId: string) {
@@ -28,6 +50,10 @@ function toRow(job: Omit<Job, 'id' | 'createdAt'>, userId: string) {
     memo: job.memo,
     status: job.status,
     cover_letter: job.coverLetter ?? null,
+    duties: job.duties ?? '',
+    employment_type: job.employmentType ?? '',
+    career: job.career ?? '',
+    wage: job.wage ?? '',
   }
 }
 
@@ -44,6 +70,10 @@ function fromRow(row: Record<string, unknown>): Job {
     status: row.status as JobStatus,
     coverLetter: row.cover_letter as Job['coverLetter'],
     createdAt: row.created_at as string,
+    duties: (row.duties as string) ?? '',
+    employmentType: (row.employment_type as string) ?? '',
+    career: (row.career as string) ?? '',
+    wage: (row.wage as string) ?? '',
   }
 }
 
@@ -58,6 +88,7 @@ export const useJobStore = create<JobStore>()(
       jobs: [],
       loading: false,
       keywords: [],
+      profile: DEFAULT_PROFILE,
 
       fetchJobs: async () => {
         const user = await getUser()
@@ -109,6 +140,10 @@ export const useJobStore = create<JobStore>()(
         if (updates.memo !== undefined) patch.memo = updates.memo
         if (updates.status !== undefined) patch.status = updates.status
         if (updates.coverLetter !== undefined) patch.cover_letter = updates.coverLetter
+        if (updates.duties !== undefined) patch.duties = updates.duties
+        if (updates.employmentType !== undefined) patch.employment_type = updates.employmentType
+        if (updates.career !== undefined) patch.career = updates.career
+        if (updates.wage !== undefined) patch.wage = updates.wage
 
         const { data, error } = await supabase
           .from('jobs').update(patch).eq('id', id).select().single()
@@ -151,6 +186,8 @@ export const useJobStore = create<JobStore>()(
       removeKeyword: (kw) => {
         set((s) => ({ keywords: s.keywords.filter((k) => k !== kw) }))
       },
+
+      updateProfile: (p) => set({ profile: p }),
 
       // persist 미들웨어가 사용하지만 직접 호출은 안 함
       _get: get,

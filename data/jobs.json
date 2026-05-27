@@ -1,1 +1,40 @@
-[]
+[
+  {
+    "company": "디케이닥터",
+    "position": "프론트엔드",
+    "url": "",
+    "techStack": [
+      "React",
+      "TypeScript",
+      "Next.js",
+      "Tailwind CSS",
+      "Redux",
+      "Axios",
+      "Jest",
+      "Figma"
+    ],
+    "deadline": null,
+    "memo": "",
+    "status": "관심",
+    "id": "950b5f2b-1abd-4ef0-9445-ddd60454a0f2",
+    "createdAt": "2026-05-17T13:26:30.308Z"
+  },
+  {
+    "company": "아이티무유",
+    "position": "풀스택 소프트웨어 개발자",
+    "url": "https://zighang.com/recruitment/60989bba-59fb-4b1b-8c3f-52225543281f?utm_source=naver&utm_medium=cafe&utm_campaign=job_posting&utm_content=ansan",
+    "techStack": [
+      "RESTful API",
+      "WebGL",
+      "Three.js",
+      "3D Bin Packing",
+      "OCR",
+      "AI"
+    ],
+    "deadline": "2026-06-05",
+    "memo": "경력 무관 신입 가능. 대학교 4년 이상 졸업. 백엔드·프론트엔드 실무 개발 담당하며 수출물류 SaaS 제품 개발에 참여.",
+    "status": "관심",
+    "id": "75718c8b-5daa-4f22-b60b-7b1084ba646a",
+    "createdAt": "2026-05-17T13:54:28.231Z"
+  }
+]
