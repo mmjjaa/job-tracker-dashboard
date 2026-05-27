@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { DragDropContext, Droppable } from '@hello-pangea/dnd'
 import type { DropResult } from '@hello-pangea/dnd'
 import { useJobStore } from '../../store/jobStore'
 import type { Job, JobStatus } from '../../types'
 import KanbanCard from './KanbanCard'
+import JobDetailModal from './JobDetailModal'
 
 const COLUMNS: { status: JobStatus; label: string; color: string; bg: string }[] = [
   { status: '관심',    label: '관심',    color: 'text-blue-700',   bg: 'bg-blue-50' },
@@ -17,6 +19,7 @@ interface Props {
 
 export default function KanbanBoard({ onEdit }: Props) {
   const { jobs, updateStatus } = useJobStore()
+  const [detailJob, setDetailJob] = useState<Job | null>(null)
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return
@@ -27,6 +30,7 @@ export default function KanbanBoard({ onEdit }: Props) {
   }
 
   return (
+    <>
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {COLUMNS.map(({ status, label, color, bg }) => {
@@ -50,7 +54,7 @@ export default function KanbanBoard({ onEdit }: Props) {
                     }`}
                   >
                     {columnJobs.map((job, index) => (
-                      <KanbanCard key={job.id} job={job} index={index} onEdit={onEdit} />
+                      <KanbanCard key={job.id} job={job} index={index} onEdit={onEdit} onDetail={setDetailJob} />
                     ))}
                     {provided.placeholder}
                     {columnJobs.length === 0 && !snapshot.isDraggingOver && (
@@ -64,5 +68,14 @@ export default function KanbanBoard({ onEdit }: Props) {
         })}
       </div>
     </DragDropContext>
+
+    {detailJob && (
+      <JobDetailModal
+        job={detailJob}
+        onClose={() => setDetailJob(null)}
+        onEdit={(job) => { setDetailJob(null); onEdit(job) }}
+      />
+    )}
+    </>
   )
 }

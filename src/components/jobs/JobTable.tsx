@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useJobStore } from '../../store/jobStore'
 import type { Job, JobStatus } from '../../types'
 import CoverLetterModal from './CoverLetterModal'
+import JobDetailModal from './JobDetailModal'
 
 const JOB_STATUSES: JobStatus[] = ['관심', '지원예정', '지원완료', '결과대기']
 
@@ -32,6 +33,7 @@ export default function JobTable({ onEdit }: JobTableProps) {
   const [statusFilter, setStatusFilter] = useState<JobStatus | 'all'>('all')
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [coverLetterJob, setCoverLetterJob] = useState<Job | null>(null)
+  const [detailJob, setDetailJob] = useState<Job | null>(null)
 
   const filtered = jobs.filter((j) => {
     const q = search.toLowerCase()
@@ -172,7 +174,7 @@ export default function JobTable({ onEdit }: JobTableProps) {
               </thead>
               <tbody>
                 {filtered.map((job) => (
-                  <tr key={job.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                  <tr key={job.id} onClick={() => setDetailJob(job)} className="border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer">
                     <td className="px-4 py-3 font-medium text-gray-900">
                       {job.url ? (
                         <a
@@ -205,7 +207,7 @@ export default function JobTable({ onEdit }: JobTableProps) {
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                       <select
                         value={job.status}
                         onChange={(e) => updateStatus(job.id, e.target.value as JobStatus)}
@@ -222,7 +224,7 @@ export default function JobTable({ onEdit }: JobTableProps) {
                     <td className="px-4 py-3 text-gray-600 max-w-[180px] truncate">
                       {job.memo || '-'}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => setCoverLetterJob(job)}
@@ -256,6 +258,14 @@ export default function JobTable({ onEdit }: JobTableProps) {
             </table>
           </div>
         </>
+      )}
+
+      {detailJob && (
+        <JobDetailModal
+          job={detailJob}
+          onClose={() => setDetailJob(null)}
+          onEdit={(job) => { setDetailJob(null); onEdit(job) }}
+        />
       )}
 
       {coverLetterJob && (

@@ -5,6 +5,7 @@ interface Props {
   job: Job
   index: number
   onEdit: (job: Job) => void
+  onDetail: (job: Job) => void
 }
 
 function getDday(deadline: string | null): string {
@@ -24,7 +25,7 @@ function getDdayColor(deadline: string | null): string {
   return 'text-gray-500'
 }
 
-export default function KanbanCard({ job, index, onEdit }: Props) {
+export default function KanbanCard({ job, index, onEdit: _onEdit, onDetail }: Props) {
   return (
     <Draggable draggableId={job.id} index={index}>
       {(provided, snapshot) => (
@@ -32,7 +33,7 @@ export default function KanbanCard({ job, index, onEdit }: Props) {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          onClick={() => onEdit(job)}
+          onClick={() => onDetail(job)}
           className={`bg-white rounded-lg border p-3 cursor-pointer select-none space-y-2 transition-shadow ${
             snapshot.isDragging
               ? 'shadow-lg border-indigo-300 rotate-1'

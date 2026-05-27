@@ -60,6 +60,10 @@ export default function JobSearchModal({ onClose, onSelect }: Props) {
       address: job.WORK_PARAR_BASS_ADRES_CN || '',
       memo: job.GUI_LN || '',
       status: '관심',
+      duties: job.DTY_CN || '',
+      employmentType: job.EMPLYM_STLE_CMMN_MM || '',
+      career: job.CAREER_CND_NM || '',
+      wage: job.HOPE_WAGE?.trim() || '',
     }
     onSelect(mapped)
     setAddedIds((prev) => new Set(prev).add(job.JO_REQST_NO))
