@@ -2,6 +2,13 @@ import { useState, useRef } from 'react'
 import { useJobStore } from '../../store/jobStore'
 
 type ViewMode = 'table' | 'kanban'
+type PageType = 'dashboard' | 'calendar' | 'jobs'
+
+const PAGE_TITLE: Record<PageType, string> = {
+  dashboard: '대시보드',
+  calendar: '달력',
+  jobs: '공고 관리',
+}
 
 interface HeaderProps {
   onAddJob: () => void
@@ -11,9 +18,11 @@ interface HeaderProps {
   userEmail: string
   isGuest: boolean
   onSignOut: () => void
+  page: PageType
 }
 
-export default function Header({ onAddJob, onSearchJob, view, onViewChange, userEmail, isGuest, onSignOut }: HeaderProps) {
+export default function Header({ onAddJob, onSearchJob, view, onViewChange, userEmail, isGuest, onSignOut, page }: HeaderProps) {
+  const isJobsPage = page === 'jobs'
   const jobs = useJobStore((s) => s.jobs)
   const keywords = useJobStore((s) => s.keywords)
   const addKeyword = useJobStore((s) => s.addKeyword)
@@ -61,29 +70,31 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
             <p className="text-gray-900 font-bold text-base leading-tight">Job Tracker</p>
             <p className="text-gray-400 text-xs">취업 준비 대시보드</p>
           </div>
-          <h2 className="hidden md:block text-gray-800 font-semibold text-lg">공고 관리</h2>
+          <h2 className="hidden md:block text-gray-800 font-semibold text-lg">{PAGE_TITLE[page]}</h2>
         </div>
 
         <div className="flex items-center gap-2">
-          {/* 뷰 토글 */}
-          <div className="hidden md:flex items-center border border-gray-200 rounded-lg overflow-hidden">
-            <button
-              onClick={() => onViewChange('table')}
-              className={`px-3 py-2 text-sm transition-colors ${
-                view === 'table' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-50'
-              }`}
-            >
-              📋 테이블
-            </button>
-            <button
-              onClick={() => onViewChange('kanban')}
-              className={`px-3 py-2 text-sm transition-colors ${
-                view === 'kanban' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-50'
-              }`}
-            >
-              🗂 칸반
-            </button>
-          </div>
+          {/* 뷰 토글 — 공고 관리 페이지만 */}
+          {isJobsPage && (
+            <div className="hidden md:flex items-center border border-gray-200 rounded-lg overflow-hidden">
+              <button
+                onClick={() => onViewChange('table')}
+                className={`px-3 py-2 text-sm transition-colors ${
+                  view === 'table' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-50'
+                }`}
+              >
+                📋 테이블
+              </button>
+              <button
+                onClick={() => onViewChange('kanban')}
+                className={`px-3 py-2 text-sm transition-colors ${
+                  view === 'kanban' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-50'
+                }`}
+              >
+                🗂 칸반
+              </button>
+            </div>
+          )}
 
           {/* 내보내기 */}
           <button
@@ -93,25 +104,30 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
             내보내기
           </button>
 
-          {/* 공고 검색 */}
-          <button
-            onClick={onSearchJob}
-            className="hidden md:flex items-center gap-1.5 text-gray-600 hover:text-indigo-600 text-sm border border-gray-200 px-3 py-2 rounded-lg hover:bg-indigo-50 transition-colors font-medium"
-          >
-            🔍 공고 검색
-            {keywords.length > 0 && (
-              <span className="bg-indigo-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center leading-none">
-                {keywords.length}
-              </span>
-            )}
-          </button>
+          {/* 공고 검색 — 공고 관리 페이지만 */}
+          {isJobsPage && (
+            <button
+              onClick={onSearchJob}
+              className="hidden md:flex items-center gap-1.5 text-gray-600 hover:text-indigo-600 text-sm border border-gray-200 px-3 py-2 rounded-lg hover:bg-indigo-50 transition-colors font-medium"
+            >
+              🔍 공고 검색
+              {keywords.length > 0 && (
+                <span className="bg-indigo-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center leading-none">
+                  {keywords.length}
+                </span>
+              )}
+            </button>
+          )}
 
-          <button
-            onClick={onAddJob}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-3 md:px-4 py-2 rounded-lg transition-colors"
-          >
-            + 공고 추가
-          </button>
+          {/* 공고 추가 — 공고 관리 페이지만 */}
+          {isJobsPage && (
+            <button
+              onClick={onAddJob}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-3 md:px-4 py-2 rounded-lg transition-colors"
+            >
+              + 공고 추가
+            </button>
+          )}
 
           {/* 유저 메뉴 */}
           <div className="relative">
@@ -157,8 +173,8 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
         </div>
       </div>
 
-      {/* 키워드 구독 행 — 데스크탑 */}
-      <div className="hidden md:flex items-center gap-2 flex-wrap">
+      {/* 키워드 구독 행 — 공고 관리 페이지만 */}
+      {isJobsPage && <div className="hidden md:flex items-center gap-2 flex-wrap">
         <span className="text-xs text-gray-400 font-medium shrink-0">구독 키워드</span>
         {keywords.map((kw) => (
           <span
@@ -193,7 +209,7 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
             + 키워드 추가
           </button>
         )}
-      </div>
+      </div>}
     </header>
   )
 }
