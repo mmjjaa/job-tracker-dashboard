@@ -2,11 +2,11 @@ import { useJobStore } from '../../store/jobStore'
 import StatsCard from './StatsCard'
 import type { JobStatus } from '../../types'
 
-const CARDS: { status: JobStatus | 'all'; label: string; icon: string; accentClass: string }[] = [
-  { status: 'all',    label: '전체 공고',  icon: '📋', accentClass: 'bg-blue-500' },
-  { status: '관심',   label: '관심',      icon: '🔖', accentClass: 'bg-sky-400' },
-  { status: '지원완료', label: '지원완료', icon: '✅', accentClass: 'bg-emerald-500' },
-  { status: '결과대기', label: '결과대기', icon: '⏳', accentClass: 'bg-amber-400' },
+const CARDS: { status: JobStatus | 'all'; label: string; icon: string; accentClass: string; highlight?: boolean; countColorClass?: string }[] = [
+  { status: 'all',      label: '전체 공고', icon: '📋', accentClass: 'bg-blue-500' },
+  { status: '관심',     label: '관심',      icon: '🔖', accentClass: 'bg-sky-400' },
+  { status: '지원완료', label: '지원완료',  icon: '✅', accentClass: 'bg-emerald-500', highlight: true, countColorClass: 'text-emerald-600' },
+  { status: '결과대기', label: '결과대기',  icon: '⏳', accentClass: 'bg-amber-400',  highlight: true, countColorClass: 'text-amber-500' },
 ]
 
 export default function StatsSection() {
@@ -18,6 +18,11 @@ export default function StatsSection() {
     const diff = Math.ceil((new Date(j.deadline).getTime() - Date.now()) / 86400000)
     return diff >= 0 && diff <= 7
   }).length
+  const thisWeek = jobs.filter((j) => {
+    const diff = Math.ceil((Date.now() - new Date(j.createdAt).getTime()) / 86400000)
+    return diff <= 7
+  }).length
+  const achieveRate = jobs.length > 0 ? Math.round((applied / jobs.length) * 100) : 0
 
   return (
     <div className="space-y-5">
@@ -43,12 +48,12 @@ export default function StatsSection() {
 
           <div className="flex items-end gap-10">
             <div>
-              <p className="text-4xl font-bold text-gray-900 leading-none">{jobs.length}</p>
-              <p className="text-xs text-gray-400 mt-1.5">전체 공고</p>
+              <p className="text-4xl font-bold text-blue-600 leading-none">{achieveRate}<span className="text-2xl font-semibold">%</span></p>
+              <p className="text-xs text-gray-400 mt-1.5">지원 달성률</p>
             </div>
             <div>
-              <p className="text-4xl font-bold text-blue-600 leading-none">{applied}</p>
-              <p className="text-xs text-gray-400 mt-1.5">지원완료</p>
+              <p className="text-4xl font-bold text-indigo-500 leading-none">{thisWeek}</p>
+              <p className="text-xs text-gray-400 mt-1.5">이번 주 추가</p>
             </div>
             {urgent > 0 && (
               <div>
@@ -62,13 +67,15 @@ export default function StatsSection() {
 
       {/* 스탯 카드 */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {CARDS.map(({ status, label, icon, accentClass }) => (
+        {CARDS.map(({ status, label, icon, accentClass, highlight, countColorClass }) => (
           <StatsCard
             key={status}
             label={label}
             count={status === 'all' ? jobs.length : jobs.filter((j) => j.status === status).length}
             icon={icon}
             accentClass={accentClass}
+            highlight={highlight}
+            countColorClass={countColorClass}
           />
         ))}
       </div>

@@ -126,7 +126,6 @@ export default function App() {
             <>
               <StatsSection />
               <ChartSection />
-              <MapSection />
             </>
           )}
           {page === 'calendar' && (
@@ -139,6 +138,7 @@ export default function App() {
               ) : (
                 <KanbanBoard onEdit={handleEdit} />
               )}
+              <MapSection />
             </>
           )}
         </main>
