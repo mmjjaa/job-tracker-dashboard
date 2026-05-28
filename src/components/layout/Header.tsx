@@ -77,11 +77,11 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
         <div className="flex items-center gap-2">
           {/* 뷰 토글 — 공고 관리 페이지만 */}
           {isJobsPage && (
-            <div className="hidden md:flex items-center border border-gray-200 rounded-lg overflow-hidden">
+            <div className="hidden md:flex items-center border border-gray-200 rounded-lg">
               <Tooltip text="행 형태로 공고를 관리해요">
                 <button
                   onClick={() => onViewChange('table')}
-                  className={`px-3 py-2 text-sm transition-colors ${
+                  className={`px-3 py-2 text-sm transition-colors rounded-l-lg ${
                     view === 'table' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:bg-gray-50'
                   }`}
                 >
@@ -91,7 +91,7 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
               <Tooltip text="드래그로 상태를 변경할 수 있어요">
                 <button
                   onClick={() => onViewChange('kanban')}
-                  className={`px-3 py-2 text-sm transition-colors ${
+                  className={`px-3 py-2 text-sm transition-colors rounded-r-lg ${
                     view === 'kanban' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:bg-gray-50'
                   }`}
                 >
