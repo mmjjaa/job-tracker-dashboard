@@ -80,7 +80,7 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
               <button
                 onClick={() => onViewChange('table')}
                 className={`px-3 py-2 text-sm transition-colors ${
-                  view === 'table' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-50'
+                  view === 'table' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:bg-gray-50'
                 }`}
               >
                 📋 테이블
@@ -88,7 +88,7 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
               <button
                 onClick={() => onViewChange('kanban')}
                 className={`px-3 py-2 text-sm transition-colors ${
-                  view === 'kanban' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-50'
+                  view === 'kanban' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:bg-gray-50'
                 }`}
               >
                 🗂 칸반
@@ -108,11 +108,11 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
           {isJobsPage && (
             <button
               onClick={onSearchJob}
-              className="hidden md:flex items-center gap-1.5 text-gray-600 hover:text-indigo-600 text-sm border border-gray-200 px-3 py-2 rounded-lg hover:bg-indigo-50 transition-colors font-medium"
+              className="hidden md:flex items-center gap-1.5 text-gray-600 hover:text-blue-600 text-sm border border-gray-200 px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors font-medium"
             >
               🔍 공고 검색
               {keywords.length > 0 && (
-                <span className="bg-indigo-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center leading-none">
+                <span className="bg-blue-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center leading-none">
                   {keywords.length}
                 </span>
               )}
@@ -123,7 +123,7 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
           {isJobsPage && (
             <button
               onClick={onAddJob}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-3 md:px-4 py-2 rounded-lg transition-colors"
+              className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-3 md:px-4 py-2 rounded-lg transition-colors"
             >
               + 공고 추가
             </button>
@@ -135,7 +135,7 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
               onClick={() => setMenuOpen((v) => !v)}
               className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 transition-colors"
             >
-              <div className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold">
+              <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold">
                 {isGuest ? 'G' : (userEmail[0] ?? '?').toUpperCase()}
               </div>
               <span className="hidden md:block text-xs text-gray-600 max-w-[120px] truncate">
@@ -179,12 +179,12 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
         {keywords.map((kw) => (
           <span
             key={kw}
-            className="inline-flex items-center gap-1 bg-indigo-50 text-indigo-700 text-xs px-2.5 py-1 rounded-full font-medium"
+            className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 text-xs px-2.5 py-1 rounded-full font-medium"
           >
             {kw}
             <button
               onClick={() => removeKeyword(kw)}
-              className="text-indigo-400 hover:text-indigo-700 leading-none"
+              className="text-blue-400 hover:text-blue-700 leading-none"
             >
               ✕
             </button>
@@ -199,12 +199,12 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
             onKeyDown={handleKwSubmit}
             onBlur={() => { setKwInput(''); setKwInputOpen(false) }}
             placeholder="입력 후 Enter"
-            className="text-xs border border-indigo-300 rounded-full px-2.5 py-1 outline-none focus:ring-2 focus:ring-indigo-300 w-28"
+            className="text-xs border border-blue-300 rounded-full px-2.5 py-1 outline-none focus:ring-2 focus:ring-blue-300 w-28"
           />
         ) : (
           <button
             onClick={openKwInput}
-            className="text-xs text-gray-400 hover:text-indigo-600 border border-dashed border-gray-300 hover:border-indigo-400 px-2.5 py-1 rounded-full transition-colors"
+            className="text-xs text-gray-400 hover:text-blue-600 border border-dashed border-gray-300 hover:border-blue-400 px-2.5 py-1 rounded-full transition-colors"
           >
             + 키워드 추가
           </button>

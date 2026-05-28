@@ -85,8 +85,8 @@ export default function App() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -95,7 +95,7 @@ export default function App() {
 
   return (
     <GoogleCalendarProvider>
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen bg-white overflow-hidden">
       <Sidebar
         onSignOut={isGuest ? () => setIsGuest(false) : handleSignOut}
         userEmail={isGuest ? '게스트 모드' : (session?.user.email ?? '')}

@@ -8,6 +8,13 @@ interface Props {
   onDetail: (job: Job) => void
 }
 
+const STATUS_BORDER: Record<string, string> = {
+  '관심':    'border-l-sky-400',
+  '지원예정': 'border-l-violet-400',
+  '지원완료': 'border-l-emerald-400',
+  '결과대기': 'border-l-amber-400',
+}
+
 function getDday(deadline: string | null): string {
   if (!deadline) return ''
   const diff = Math.ceil((new Date(deadline).getTime() - Date.now()) / 86400000)
@@ -26,6 +33,8 @@ function getDdayColor(deadline: string | null): string {
 }
 
 export default function KanbanCard({ job, index, onEdit: _onEdit, onDetail }: Props) {
+  const borderColor = STATUS_BORDER[job.status] ?? 'border-l-gray-300'
+
   return (
     <Draggable draggableId={job.id} index={index}>
       {(provided, snapshot) => (
@@ -34,16 +43,16 @@ export default function KanbanCard({ job, index, onEdit: _onEdit, onDetail }: Pr
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           onClick={() => onDetail(job)}
-          className={`bg-white rounded-lg border p-3 cursor-pointer select-none space-y-2 transition-shadow ${
+          className={`bg-white rounded-xl border-l-4 border border-gray-100 ${borderColor} p-3 cursor-pointer select-none space-y-2 transition-all duration-150 ${
             snapshot.isDragging
-              ? 'shadow-lg border-indigo-300 rotate-1'
-              : 'border-gray-200 hover:border-indigo-200 hover:shadow-sm'
+              ? 'shadow-xl rotate-1 border-blue-200'
+              : 'hover:shadow-md hover:border-l-4'
           }`}
         >
           <div className="flex items-start justify-between gap-1">
             <div className="min-w-0">
               <p className="text-sm font-semibold text-gray-900 truncate">{job.company}</p>
-              <p className="text-xs text-gray-500 truncate mt-0.5">{job.position}</p>
+              <p className="text-xs text-gray-400 truncate mt-0.5">{job.position}</p>
             </div>
             {job.deadline && (
               <span className={`text-xs shrink-0 ${getDdayColor(job.deadline)}`}>
@@ -55,7 +64,7 @@ export default function KanbanCard({ job, index, onEdit: _onEdit, onDetail }: Pr
           {job.techStack.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {job.techStack.slice(0, 3).map((t) => (
-                <span key={t} className="text-xs bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded-full">
+                <span key={t} className="text-xs bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full">
                   {t}
                 </span>
               ))}
