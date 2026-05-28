@@ -14,6 +14,7 @@ import KanbanBoard from './components/jobs/KanbanBoard'
 import JobFormModal from './components/jobs/JobFormModal'
 import JobSearchModal from './components/jobs/JobSearchModal'
 import ProfileModal from './components/profile/ProfileModal'
+import { GoogleCalendarProvider } from './contexts/GoogleCalendarContext'
 import type { Job } from './types'
 
 type ViewMode = 'table' | 'kanban'
@@ -93,6 +94,7 @@ export default function App() {
   if (!session && !isGuest) return <AuthPage onGuestStart={() => setIsGuest(true)} />
 
   return (
+    <GoogleCalendarProvider>
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       <Sidebar
         onSignOut={isGuest ? () => setIsGuest(false) : handleSignOut}
@@ -144,5 +146,6 @@ export default function App() {
       )}
       {isProfileOpen && <ProfileModal onClose={() => setIsProfileOpen(false)} />}
     </div>
+    </GoogleCalendarProvider>
   )
 }

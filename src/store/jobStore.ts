@@ -94,11 +94,20 @@ export const useJobStore = create<JobStore>()(
         const user = await getUser()
         if (!user) return
         set({ loading: true })
+        const prevJobs = get().jobs
         const { data, error } = await supabase
           .from('jobs')
           .select('*')
           .order('created_at', { ascending: false })
-        if (!error && data) set({ jobs: data.map(fromRow) })
+        if (!error && data) {
+          const prevMap = new Map(prevJobs.map((j) => [j.id, j]))
+          set({
+            jobs: data.map((row) => ({
+              ...fromRow(row),
+              calendarEventId: prevMap.get(row.id as string)?.calendarEventId,
+            })),
+          })
+        }
         set({ loading: false })
       },
 
@@ -130,6 +139,16 @@ export const useJobStore = create<JobStore>()(
           }))
           return
         }
+
+        // calendarEventId는 로컬 전용 — Supabase 비저장, 즉시 적용
+        if ('calendarEventId' in updates) {
+          set((s) => ({
+            jobs: s.jobs.map((j) =>
+              j.id === id ? { ...j, calendarEventId: updates.calendarEventId } : j
+            ),
+          }))
+        }
+
         const patch: Record<string, unknown> = {}
         if (updates.company !== undefined) patch.company = updates.company
         if (updates.position !== undefined) patch.position = updates.position
@@ -145,10 +164,16 @@ export const useJobStore = create<JobStore>()(
         if (updates.career !== undefined) patch.career = updates.career
         if (updates.wage !== undefined) patch.wage = updates.wage
 
+        if (Object.keys(patch).length === 0) return
+
         const { data, error } = await supabase
           .from('jobs').update(patch).eq('id', id).select().single()
-        if (!error && data)
-          set((s) => ({ jobs: s.jobs.map((j) => (j.id === id ? fromRow(data) : j)) }))
+        if (!error && data) {
+          const calendarEventId = get().jobs.find((j) => j.id === id)?.calendarEventId
+          set((s) => ({
+            jobs: s.jobs.map((j) => (j.id === id ? { ...fromRow(data), calendarEventId } : j)),
+          }))
+        }
       },
 
       deleteJob: async (id) => {

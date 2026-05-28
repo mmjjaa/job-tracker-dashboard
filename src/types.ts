@@ -23,4 +23,6 @@ export interface Job {
   employmentType?: string // 고용 형태 (EMPLYM_STLE_CMMN_MM)
   career?: string        // 경력 조건 (CAREER_CND_NM)
   wage?: string          // 급여 (HOPE_WAGE)
+  // 로컬 전용 (Supabase 비저장)
+  calendarEventId?: string
 }

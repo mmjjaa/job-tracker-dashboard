@@ -3,6 +3,8 @@ import type { Job } from '../../types'
 import { useJobStore } from '../../store/jobStore'
 import { analyzeJobMatch } from '../../api/claude'
 import type { MatchResult } from '../../api/claude'
+import { useGoogleCalendar } from '../../contexts/GoogleCalendarContext'
+import { createCalendarEvent, patchCalendarEvent, deleteCalendarEvent } from '../../lib/googleCalendar'
 
 const STATUS_BADGE: Record<string, string> = {
   '관심':    'bg-blue-50 text-blue-600',
@@ -51,9 +53,71 @@ interface Props {
 export default function JobDetailModal({ job, onClose, onEdit }: Props) {
   const dday = getDday(job.deadline)
   const profile = useJobStore((s) => s.profile)
+  const updateJob = useJobStore((s) => s.updateJob)
   const [matchResult, setMatchResult] = useState<MatchResult | null>(null)
   const [matchLoading, setMatchLoading] = useState(false)
   const [matchError, setMatchError] = useState('')
+
+  const { isConnected, connect, getToken } = useGoogleCalendar()
+  const [calEventId, setCalEventId] = useState<string | undefined>(job.calendarEventId)
+  const [calLoading, setCalLoading] = useState(false)
+  const [calError, setCalError] = useState('')
+
+  const jobInput = {
+    company: job.company,
+    position: job.position,
+    deadline: job.deadline,
+    status: job.status,
+    address: job.address,
+  }
+
+  const handleAddToCalendar = async () => {
+    setCalLoading(true)
+    setCalError('')
+    try {
+      const token = await getToken()
+      const eventId = await createCalendarEvent(token, jobInput)
+      await updateJob(job.id, { calendarEventId: eventId })
+      setCalEventId(eventId)
+    } catch (e) {
+      setCalError('캘린더 등록에 실패했습니다.')
+      console.error(e)
+    } finally {
+      setCalLoading(false)
+    }
+  }
+
+  const handleSyncCalendar = async () => {
+    if (!calEventId) return
+    setCalLoading(true)
+    setCalError('')
+    try {
+      const token = await getToken()
+      await patchCalendarEvent(token, calEventId, jobInput)
+    } catch (e) {
+      setCalError('캘린더 동기화에 실패했습니다.')
+      console.error(e)
+    } finally {
+      setCalLoading(false)
+    }
+  }
+
+  const handleRemoveFromCalendar = async () => {
+    if (!calEventId) return
+    setCalLoading(true)
+    setCalError('')
+    try {
+      const token = await getToken()
+      await deleteCalendarEvent(token, calEventId)
+      await updateJob(job.id, { calendarEventId: undefined })
+      setCalEventId(undefined)
+    } catch (e) {
+      setCalError('캘린더 삭제에 실패했습니다.')
+      console.error(e)
+    } finally {
+      setCalLoading(false)
+    }
+  }
 
   const hasProfile = profile.techStack.length > 0 || !!profile.career || !!profile.introduction
 
@@ -320,6 +384,50 @@ export default function JobDetailModal({ job, onClose, onEdit }: Props) {
               🔄 다시 분석
             </button>
           )}
+
+          {/* Google 캘린더 */}
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            {calError && <p className="text-xs text-red-500 mb-2">{calError}</p>}
+            {!isConnected ? (
+              <button
+                onClick={connect}
+                className="w-full py-2 text-sm text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+              >
+                📅 Google 캘린더 연동하기
+              </button>
+            ) : calEventId ? (
+              <div className="flex items-center gap-2">
+                <div className="flex-1 flex items-center gap-2 text-xs bg-green-50 text-green-700 px-3 py-2 rounded-lg font-medium">
+                  <span>📅</span> 캘린더 등록됨
+                </div>
+                <button
+                  onClick={handleSyncCalendar}
+                  disabled={calLoading}
+                  className="text-xs px-3 py-2 border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                >
+                  🔄 동기화
+                </button>
+                <button
+                  onClick={handleRemoveFromCalendar}
+                  disabled={calLoading}
+                  className="text-xs px-3 py-2 border border-red-100 rounded-lg text-red-400 hover:bg-red-50 transition-colors disabled:opacity-50"
+                >
+                  ✕
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={handleAddToCalendar}
+                disabled={calLoading}
+                className="w-full py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {calLoading
+                  ? <><div className="w-3.5 h-3.5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" /> 등록 중...</>
+                  : <>📅 Google 캘린더에 추가</>
+                }
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
