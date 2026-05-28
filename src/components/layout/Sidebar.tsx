@@ -11,108 +11,131 @@ interface SidebarProps {
   onProfileOpen: () => void
 }
 
-const NAV_ITEMS: { id: PageType; icon: string; label: string }[] = [
-  { id: 'dashboard', icon: '🏠', label: '대시보드' },
-  { id: 'calendar',  icon: '📅', label: '달력' },
-  { id: 'jobs',      icon: '📋', label: '공고 관리' },
+const NAV_ITEMS: { id: PageType; icon: string; label: string; sublabel: string }[] = [
+  { id: 'dashboard', icon: '🏠', label: '대시보드',  sublabel: '현황 한눈에 보기' },
+  { id: 'calendar',  icon: '📅', label: '달력',      sublabel: '일정 & 디데이' },
+  { id: 'jobs',      icon: '📋', label: '공고 관리',  sublabel: '지원 현황 추적' },
 ]
 
 export default function Sidebar({ onSignOut, userEmail, isGuest, page, onPageChange, onProfileOpen }: SidebarProps) {
   const { isConnected, connecting, connect, disconnect } = useGoogleCalendar()
 
   return (
-    <aside className="hidden md:flex w-60 flex-col shrink-0 bg-[#0F172A]">
+    <aside className="hidden md:flex w-56 flex-col shrink-0 bg-white border-r border-gray-100">
 
       {/* 로고 */}
-      <div className="px-5 py-6 border-b border-white/5">
+      <div className="px-5 py-5 border-b border-gray-100">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shrink-0">
             <span className="text-white text-xs font-bold tracking-tight">JT</span>
           </div>
           <div>
-            <h1 className="text-white font-bold text-sm leading-tight">Job Tracker</h1>
-            <p className="text-slate-500 text-xs mt-0.5">취업 준비 대시보드</p>
+            <h1 className="text-gray-900 font-bold text-sm leading-tight">Job Tracker</h1>
+            <p className="text-gray-400 text-xs mt-0.5">취업 준비 대시보드</p>
           </div>
         </div>
       </div>
 
-      {/* 네비게이션 */}
-      <nav className="px-3 pt-4 flex-1 space-y-0.5">
-        <p className="text-slate-600 text-xs font-semibold uppercase tracking-wider px-3 mb-2">메뉴</p>
-        {NAV_ITEMS.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => onPageChange(item.id)}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-150 ${
-              page === item.id
-                ? 'bg-blue-600 text-white font-semibold shadow-lg shadow-blue-900/30'
-                : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-            }`}
-          >
-            <span className="text-base">{item.icon}</span>
-            {item.label}
-          </button>
-        ))}
+      {/* 메인 네비게이션 */}
+      <nav className="px-3 pt-3 flex-1 space-y-0.5">
+        <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider px-3 mb-2">메뉴</p>
+        {NAV_ITEMS.map((item) => {
+          const isActive = page === item.id
+          return (
+            <button
+              key={item.id}
+              onClick={() => onPageChange(item.id)}
+              className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all duration-150 group
+                ${isActive
+                  ? 'bg-blue-50 border-l-4 border-blue-600 pl-2.5'
+                  : 'border-l-4 border-transparent hover:bg-gray-50'
+                }`}
+            >
+              <span className="text-xl shrink-0">{item.icon}</span>
+              <div className="min-w-0">
+                <p className={`text-sm font-semibold leading-tight ${isActive ? 'text-blue-700' : 'text-gray-700 group-hover:text-gray-900'}`}>
+                  {item.label}
+                </p>
+                <p className={`text-xs mt-0.5 leading-tight ${isActive ? 'text-blue-500' : 'text-gray-400'}`}>
+                  {item.sublabel}
+                </p>
+              </div>
+            </button>
+          )
+        })}
 
-        {/* 부가 메뉴 */}
-        <div className="pt-4 mt-2 border-t border-white/5 space-y-0.5">
-          <p className="text-slate-600 text-xs font-semibold uppercase tracking-wider px-3 mb-2">설정</p>
+        {/* 설정 섹션 */}
+        <div className="pt-4 mt-2 border-t border-gray-100 space-y-0.5">
+          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider px-3 mb-2">설정</p>
 
           <button
             onClick={onProfileOpen}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all duration-150"
+            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left border-l-4 border-transparent hover:bg-gray-50 transition-all duration-150 group"
           >
-            <span className="text-base">👤</span>
-            내 프로필
+            <span className="text-xl shrink-0">👤</span>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-gray-700 group-hover:text-gray-900 leading-tight">내 프로필</p>
+              <p className="text-xs text-gray-400 mt-0.5 leading-tight">AI 적합도 분석</p>
+            </div>
           </button>
 
           {isConnected ? (
-            <div className="px-3 py-2.5">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
-                <span className="text-slate-300 text-xs">Google 캘린더 연동됨</span>
+            <div className="px-3 py-3 rounded-xl bg-emerald-50 border-l-4 border-emerald-500 pl-2.5">
+              <div className="flex items-center gap-3">
+                <span className="text-xl shrink-0">📆</span>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                    <p className="text-sm font-semibold text-emerald-700 leading-tight">캘린더 연동됨</p>
+                  </div>
+                  <button
+                    onClick={disconnect}
+                    className="text-xs text-gray-400 hover:text-red-500 transition-colors mt-0.5"
+                  >
+                    연동 해제
+                  </button>
+                </div>
               </div>
-              <button
-                onClick={disconnect}
-                className="text-xs text-slate-600 hover:text-red-400 transition-colors ml-3.5"
-              >
-                연동 해제
-              </button>
             </div>
           ) : (
             <button
               onClick={connect}
               disabled={connecting}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all duration-150 disabled:opacity-40"
+              className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left border-l-4 border-transparent hover:bg-gray-50 transition-all duration-150 disabled:opacity-40 group"
             >
               {connecting
-                ? <div className="w-4 h-4 border-2 border-slate-500 border-t-transparent rounded-full animate-spin" />
-                : <span className="text-base">📅</span>
+                ? <div className="w-5 h-5 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin shrink-0" />
+                : <span className="text-xl shrink-0">📆</span>
               }
-              {connecting ? '연동 중...' : 'Google 캘린더 연동'}
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-gray-700 group-hover:text-gray-900 leading-tight">
+                  {connecting ? '연동 중...' : 'Google 캘린더'}
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5 leading-tight">일정 자동 동기화</p>
+              </div>
             </button>
           )}
         </div>
       </nav>
 
       {/* 하단 유저 정보 */}
-      <div className="p-4 border-t border-white/5">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center text-blue-300 text-xs font-bold shrink-0">
+      <div className="p-4 border-t border-gray-100">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold shrink-0">
             {isGuest ? 'G' : (userEmail[0] ?? '?').toUpperCase()}
           </div>
           <div className="min-w-0">
-            <p className="text-slate-300 text-xs font-medium truncate">
+            <p className="text-gray-700 text-xs font-semibold truncate">
               {isGuest ? '게스트 모드' : userEmail}
             </p>
-            <p className="text-slate-600 text-xs">
+            <p className="text-gray-400 text-xs">
               {isGuest ? '로컬 저장' : '로그인 중'}
             </p>
           </div>
         </div>
         <button
           onClick={onSignOut}
-          className="w-full text-left text-slate-600 hover:text-slate-300 text-xs py-1 transition-colors"
+          className="w-full text-left text-gray-400 hover:text-red-500 text-xs py-1 transition-colors"
         >
           {isGuest ? '로그인 화면으로' : '로그아웃'}
         </button>
