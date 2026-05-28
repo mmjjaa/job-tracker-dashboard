@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { useJobStore } from '../../store/jobStore'
+import Tooltip from '../ui/Tooltip'
 
 type ViewMode = 'table' | 'kanban'
 type PageType = 'dashboard' | 'calendar' | 'jobs'
@@ -77,56 +78,66 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
           {/* 뷰 토글 — 공고 관리 페이지만 */}
           {isJobsPage && (
             <div className="hidden md:flex items-center border border-gray-200 rounded-lg overflow-hidden">
-              <button
-                onClick={() => onViewChange('table')}
-                className={`px-3 py-2 text-sm transition-colors ${
-                  view === 'table' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:bg-gray-50'
-                }`}
-              >
-                📋 테이블
-              </button>
-              <button
-                onClick={() => onViewChange('kanban')}
-                className={`px-3 py-2 text-sm transition-colors ${
-                  view === 'kanban' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:bg-gray-50'
-                }`}
-              >
-                🗂 칸반
-              </button>
+              <Tooltip text="행 형태로 공고를 관리해요">
+                <button
+                  onClick={() => onViewChange('table')}
+                  className={`px-3 py-2 text-sm transition-colors ${
+                    view === 'table' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:bg-gray-50'
+                  }`}
+                >
+                  📋 테이블
+                </button>
+              </Tooltip>
+              <Tooltip text="드래그로 상태를 변경할 수 있어요">
+                <button
+                  onClick={() => onViewChange('kanban')}
+                  className={`px-3 py-2 text-sm transition-colors ${
+                    view === 'kanban' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:bg-gray-50'
+                  }`}
+                >
+                  🗂 칸반
+                </button>
+              </Tooltip>
             </div>
           )}
 
           {/* 내보내기 */}
-          <button
-            onClick={handleExport}
-            className="hidden md:block text-gray-500 hover:text-gray-700 text-sm border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            내보내기
-          </button>
+          <Tooltip text="공고 데이터를 JSON 파일로 저장해요">
+            <button
+              onClick={handleExport}
+              className="hidden md:block text-gray-500 hover:text-gray-700 text-sm border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              내보내기
+            </button>
+          </Tooltip>
 
           {/* 공고 검색 — 공고 관리 페이지만 */}
           {isJobsPage && (
-            <button
-              onClick={onSearchJob}
-              className="hidden md:flex items-center gap-1.5 text-gray-600 hover:text-blue-600 text-sm border border-gray-200 px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors font-medium"
-            >
-              🔍 공고 검색
-              {keywords.length > 0 && (
-                <span className="bg-blue-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center leading-none">
-                  {keywords.length}
-                </span>
-              )}
-            </button>
+            <Tooltip text="서울시 공공 API로 공고를 검색해요">
+              <button
+                onClick={onSearchJob}
+                className="hidden md:flex items-center gap-1.5 text-gray-600 hover:text-blue-600 text-sm border border-gray-200 px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors font-medium"
+              >
+                🔍 공고 검색
+                {keywords.length > 0 && (
+                  <span className="bg-blue-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center leading-none">
+                    {keywords.length}
+                  </span>
+                )}
+              </button>
+            </Tooltip>
           )}
 
           {/* 공고 추가 — 공고 관리 페이지만 */}
           {isJobsPage && (
-            <button
-              onClick={onAddJob}
-              className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-3 md:px-4 py-2 rounded-lg transition-colors"
-            >
-              + 공고 추가
-            </button>
+            <Tooltip text="새 공고를 직접 입력해요">
+              <button
+                onClick={onAddJob}
+                className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-3 md:px-4 py-2 rounded-lg transition-colors"
+              >
+                + 공고 추가
+              </button>
+            </Tooltip>
           )}
 
           {/* 유저 메뉴 */}
@@ -202,12 +213,14 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
             className="text-xs border border-blue-300 rounded-full px-2.5 py-1 outline-none focus:ring-2 focus:ring-blue-300 w-28"
           />
         ) : (
-          <button
-            onClick={openKwInput}
-            className="text-xs text-gray-400 hover:text-blue-600 border border-dashed border-gray-300 hover:border-blue-400 px-2.5 py-1 rounded-full transition-colors"
-          >
-            + 키워드 추가
-          </button>
+          <Tooltip text="키워드와 일치하는 공고를 하이라이트해요" position="top">
+            <button
+              onClick={openKwInput}
+              className="text-xs text-gray-400 hover:text-blue-600 border border-dashed border-gray-300 hover:border-blue-400 px-2.5 py-1 rounded-full transition-colors"
+            >
+              + 키워드 추가
+            </button>
+          </Tooltip>
         )}
       </div>}
     </header>
