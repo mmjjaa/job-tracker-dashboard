@@ -104,7 +104,13 @@ export default function App() {
         onPageChange={setPage}
         onProfileOpen={() => setIsProfileOpen(true)}
       />
-      <div className="flex flex-col flex-1 min-w-0">
+      <div
+        className="flex flex-col flex-1 min-w-0"
+        style={{
+          background:
+            'radial-gradient(ellipse 60% 60% at 100% 0%, rgba(99,102,241,0.13) 0%, rgba(59,130,246,0.07) 40%, transparent 70%)',
+        }}
+      >
         <Header
           onAddJob={handleAdd}
           onSearchJob={() => setIsSearchOpen(true)}
