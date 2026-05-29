@@ -14,6 +14,7 @@ import KanbanBoard from './components/jobs/KanbanBoard'
 import JobFormModal from './components/jobs/JobFormModal'
 import JobSearchModal from './components/jobs/JobSearchModal'
 import ProfileModal from './components/profile/ProfileModal'
+import JobDetailModal from './components/jobs/JobDetailModal'
 import { GoogleCalendarProvider } from './contexts/GoogleCalendarContext'
 import type { Job } from './types'
 
@@ -34,6 +35,7 @@ export default function App() {
   const [view, setView] = useState<ViewMode>(getInitialView)
   const [page, setPage] = useState<PageType>('dashboard')
   const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const [starDetailJob, setStarDetailJob] = useState<Job | null>(null)
   const fetchJobs = useJobStore((s) => s.fetchJobs)
 
   useEffect(() => {
@@ -103,6 +105,7 @@ export default function App() {
         page={page}
         onPageChange={setPage}
         onProfileOpen={() => setIsProfileOpen(true)}
+        onJobDetail={(job) => setStarDetailJob(job)}
       />
       <div
         className="flex flex-col flex-1 min-w-0"
@@ -120,6 +123,7 @@ export default function App() {
           isGuest={isGuest}
           onSignOut={isGuest ? () => setIsGuest(false) : handleSignOut}
           page={page}
+          onPageChange={setPage}
         />
         <main className="flex-1 overflow-y-auto p-6 space-y-6">
           {page === 'dashboard' && (
@@ -151,7 +155,14 @@ export default function App() {
         />
       )}
       {isProfileOpen && <ProfileModal onClose={() => setIsProfileOpen(false)} />}
+      {starDetailJob && (
+        <JobDetailModal
+          job={starDetailJob}
+          onClose={() => setStarDetailJob(null)}
+          onEdit={(job) => { setStarDetailJob(null); handleEdit(job) }}
+        />}
     </div>
+      )}
     </GoogleCalendarProvider>
   )
 }

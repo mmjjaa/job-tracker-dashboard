@@ -28,7 +28,7 @@ interface JobTableProps {
 }
 
 export default function JobTable({ onEdit }: JobTableProps) {
-  const { jobs, deleteJob, updateStatus } = useJobStore()
+  const { jobs, deleteJob, updateStatus, toggleStar } = useJobStore()
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<JobStatus | 'all'>('all')
   const [deleteId, setDeleteId] = useState<string | null>(null)
@@ -163,6 +163,7 @@ export default function JobTable({ onEdit }: JobTableProps) {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-100 text-gray-600">
+                  <th className="px-3 py-3 w-8"></th>
                   <th className="text-left px-4 py-3 font-medium w-28">회사명</th>
                   <th className="text-left px-4 py-3 font-medium w-32">포지션</th>
                   <th className="text-left px-4 py-3 font-medium">기술스택</th>
@@ -175,6 +176,15 @@ export default function JobTable({ onEdit }: JobTableProps) {
               <tbody>
                 {filtered.map((job) => (
                   <tr key={job.id} onClick={() => setDetailJob(job)} className="border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer">
+                    <td className="px-3 py-3" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={() => toggleStar(job.id)}
+                        className="text-lg hover:scale-110 transition-transform leading-none"
+                        title={job.starred ? '즐겨찾기 해제' : '즐겨찾기 추가'}
+                      >
+                        {job.starred ? <span className="text-yellow-400">★</span> : <span className="text-gray-300 hover:text-yellow-300">☆</span>}
+                      </button>
+                    </td>
                     <td className="px-4 py-3 font-medium text-gray-900">
                       {job.url ? (
                         <a

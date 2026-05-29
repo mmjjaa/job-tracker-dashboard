@@ -36,6 +36,7 @@ interface JobStore {
   addKeyword: (kw: string) => void
   removeKeyword: (kw: string) => void
   updateProfile: (p: UserProfile) => void
+  toggleStar: (id: string) => void
 }
 
 function toRow(job: Omit<Job, 'id' | 'createdAt'>, userId: string) {
@@ -105,6 +106,7 @@ export const useJobStore = create<JobStore>()(
             jobs: data.map((row) => ({
               ...fromRow(row),
               calendarEventId: prevMap.get(row.id as string)?.calendarEventId,
+              starred: prevMap.get(row.id as string)?.starred,
             })),
           })
         }
@@ -169,9 +171,13 @@ export const useJobStore = create<JobStore>()(
         const { data, error } = await supabase
           .from('jobs').update(patch).eq('id', id).select().single()
         if (!error && data) {
-          const calendarEventId = get().jobs.find((j) => j.id === id)?.calendarEventId
+          const prev = get().jobs.find((j) => j.id === id)
           set((s) => ({
-            jobs: s.jobs.map((j) => (j.id === id ? { ...fromRow(data), calendarEventId } : j)),
+            jobs: s.jobs.map((j) =>
+              j.id === id
+                ? { ...fromRow(data), calendarEventId: prev?.calendarEventId, starred: prev?.starred }
+                : j
+            ),
           }))
         }
       },
@@ -213,6 +219,11 @@ export const useJobStore = create<JobStore>()(
       },
 
       updateProfile: (p) => set({ profile: p }),
+
+      toggleStar: (id) =>
+        set((s) => ({
+          jobs: s.jobs.map((j) => (j.id === id ? { ...j, starred: !j.starred } : j)),
+        })),
 
       // persist 미들웨어가 사용하지만 직접 호출은 안 함
       _get: get,

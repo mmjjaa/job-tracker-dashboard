@@ -25,4 +25,5 @@ export interface Job {
   wage?: string          // 급여 (HOPE_WAGE)
   // 로컬 전용 (Supabase 비저장)
   calendarEventId?: string
+  starred?: boolean
 }

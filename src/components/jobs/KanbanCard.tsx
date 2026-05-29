@@ -1,5 +1,6 @@
 import { Draggable } from '@hello-pangea/dnd'
 import type { Job } from '../../types'
+import { useJobStore } from '../../store/jobStore'
 
 interface Props {
   job: Job
@@ -33,6 +34,7 @@ function getDdayColor(deadline: string | null): string {
 }
 
 export default function KanbanCard({ job, index, onEdit: _onEdit, onDetail }: Props) {
+  const toggleStar = useJobStore((s) => s.toggleStar)
   const borderColor = STATUS_BORDER[job.status] ?? 'border-l-gray-300'
 
   return (
@@ -50,15 +52,24 @@ export default function KanbanCard({ job, index, onEdit: _onEdit, onDetail }: Pr
           }`}
         >
           <div className="flex items-start justify-between gap-1">
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-gray-900 truncate">{job.company}</p>
               <p className="text-xs text-gray-400 truncate mt-0.5">{job.position}</p>
             </div>
-            {job.deadline && (
-              <span className={`text-xs shrink-0 ${getDdayColor(job.deadline)}`}>
-                {getDday(job.deadline)}
-              </span>
-            )}
+            <div className="flex items-center gap-1 shrink-0">
+              {job.deadline && (
+                <span className={`text-xs ${getDdayColor(job.deadline)}`}>
+                  {getDday(job.deadline)}
+                </span>
+              )}
+              <button
+                onClick={(e) => { e.stopPropagation(); toggleStar(job.id) }}
+                className="text-base leading-none hover:scale-110 transition-transform"
+                title={job.starred ? '즐겨찾기 해제' : '즐겨찾기 추가'}
+              >
+                {job.starred ? <span className="text-yellow-400">★</span> : <span className="text-gray-300 hover:text-yellow-300">☆</span>}
+              </button>
+            </div>
           </div>
 
           {job.techStack.length > 0 && (
