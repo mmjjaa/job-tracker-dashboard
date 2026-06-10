@@ -18,7 +18,7 @@ JSON 형식으로만 반환 (다른 텍스트 없이):
 {
   "company": "회사명",
   "position": "포지션명",
-  "techStack": ["기술1", "기술2"],ㅋㄹ
+  "techStack": ["기술1", "기술2"],
   "deadline": "YYYY-MM-DD 형식, 없으면 빈 문자열",
   "memo": "주요 자격요건 요약 (2~3줄)"
 }`;

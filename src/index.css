@@ -12,6 +12,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+button {
+  cursor: pointer;
+}
+
 @layer utilities {
   .blob {
     border-radius: 50%;

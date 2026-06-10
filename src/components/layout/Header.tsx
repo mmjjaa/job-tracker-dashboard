@@ -20,9 +20,10 @@ interface HeaderProps {
   isGuest: boolean
   onSignOut: () => void
   page: PageType
+  onPageChange: (p: PageType) => void
 }
 
-export default function Header({ onAddJob, onSearchJob, view, onViewChange, userEmail, isGuest, onSignOut, page }: HeaderProps) {
+export default function Header({ onAddJob, onSearchJob, view, onViewChange, userEmail, isGuest, onSignOut, page, onPageChange }: HeaderProps) {
   const isJobsPage = page === 'jobs'
   const jobs = useJobStore((s) => s.jobs)
   const keywords = useJobStore((s) => s.keywords)
@@ -67,10 +68,13 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
       {/* 메인 행 */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="md:hidden">
+          <button
+            onClick={() => onPageChange('dashboard')}
+            className="md:hidden text-left hover:opacity-80 transition-opacity"
+          >
             <p className="text-gray-900 font-bold text-base leading-tight">Job Tracker</p>
             <p className="text-gray-400 text-xs">취업 준비 대시보드</p>
-          </div>
+          </button>
           <h2 className="hidden md:block text-gray-800 font-semibold text-lg">{PAGE_TITLE[page]}</h2>
         </div>
 
