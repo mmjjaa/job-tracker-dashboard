@@ -9,9 +9,9 @@ import type { Job } from '../../types'
 
 const ACTION_META: Record<AgentSuggestion['action'], { icon: string; label: string; color: string }> = {
   cover_letter:  { icon: '✍️', label: '자소서 작성 필요',    color: 'bg-violet-50 border-violet-200 text-violet-700' },
-  calendar:      { icon: '📅', label: '캘린더 등록 필요',    color: 'bg-blue-50 border-blue-200 text-blue-700' },
+  calendar:      { icon: '📅', label: '캘린더 등록 필요',    color: 'bg-primary-50 border-primary-200 text-primary-700' },
   status_change: { icon: '🔄', label: '상태 업데이트 필요',  color: 'bg-amber-50 border-amber-200 text-amber-700' },
-  apply_now:     { icon: '🚀', label: '지금 바로 지원하세요', color: 'bg-red-50 border-red-200 text-red-700' },
+  apply_now:     { icon: '🔗', label: '마감 임박 — 공고 확인 필요', color: 'bg-red-50 border-red-200 text-red-700' },
 }
 
 const PRIORITY_DOT: Record<AgentSuggestion['priority'], string> = {
@@ -77,7 +77,6 @@ export default function AgentLoopCard() {
         if (job.url) {
           window.open(job.url, '_blank', 'noopener,noreferrer')
         }
-        await updateStatus(job.id, '지원완료')
         logAgentAction({ jobId: sg.jobId, action: sg.action, result: 'accepted' })
         dismissSuggestion(sg.jobId)
       }
@@ -98,7 +97,7 @@ export default function AgentLoopCard() {
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-50">
           <div className="flex items-center gap-3">
             <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-base
-              ${isRunning ? 'bg-blue-100 animate-pulse' : 'bg-blue-50'}`}>
+              ${isRunning ? 'bg-primary-100 animate-pulse' : 'bg-primary-50'}`}>
               🤖
             </div>
             <div>
@@ -113,11 +112,11 @@ export default function AgentLoopCard() {
 
           <div className="flex items-center gap-2">
             <span className={`text-xs font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5
-              ${isRunning ? 'bg-blue-100 text-blue-700' :
+              ${isRunning ? 'bg-primary-100 text-primary-700' :
                 phase === 'done' ? 'bg-emerald-100 text-emerald-700' :
                 phase === 'error' ? 'bg-red-100 text-red-600' :
                 'bg-gray-100 text-gray-500'}`}>
-              {isRunning && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping" />}
+              {isRunning && <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-ping" />}
               {PHASE_LABEL[phase]}
             </span>
 
@@ -126,7 +125,7 @@ export default function AgentLoopCard() {
                 <button
                   onClick={phase === 'error' ? reset : run}
                   disabled={!canRun && phase !== 'error'}
-                  className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {phase === 'error' ? '재시도' : '루프 실행'}
                 </button>
@@ -153,11 +152,11 @@ export default function AgentLoopCard() {
                     <div key={step} className="flex items-center gap-2">
                       <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all
                         ${done   ? 'bg-emerald-500 text-white' :
-                          active ? 'bg-blue-600 text-white animate-pulse' :
+                          active ? 'bg-primary-600 text-white animate-pulse' :
                                    'bg-gray-100 text-gray-400'}`}>
                         {done ? '✓' : i + 1}
                       </div>
-                      <span className={`text-xs font-medium ${active ? 'text-blue-600' : done ? 'text-emerald-600' : 'text-gray-400'}`}>
+                      <span className={`text-xs font-medium ${active ? 'text-primary-600' : done ? 'text-emerald-600' : 'text-gray-400'}`}>
                         {step}
                       </span>
                       {i < 2 && <span className="text-gray-200 text-xs">→</span>}
@@ -237,9 +236,19 @@ export default function AgentLoopCard() {
                           : sg.action === 'cover_letter' ? '✍️ 자소서 작성하기'
                           : sg.action === 'calendar'     ? '📅 캘린더 등록하기'
                           : sg.action === 'status_change'? '🔄 지원예정으로 변경'
-                          : '🚀 공고 열고 지원완료 처리'
+                          : '🔗 공고 링크 열기'
                         }
                       </button>
+                      {getJob(sg.jobId)?.url && (
+                        <a
+                          href={getJob(sg.jobId)?.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs px-3 py-1.5 rounded-lg bg-white/70 hover:bg-white border border-current/20 font-semibold flex items-center gap-1 transition-colors"
+                        >
+                          🔗 지원하기
+                        </a>
+                      )}
                       <button
                         onClick={() => handleDismiss(sg)}
                         disabled={isLoading}

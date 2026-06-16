@@ -222,6 +222,24 @@ export interface AgentSuggestion {
   priority: 'high' | 'medium' | 'low'
 }
 
+function pickAction(job: {
+  status: string
+  coverLetter: unknown
+  calendarEventId?: string
+  dday: number
+}): AgentActionType {
+  if (!job.coverLetter) return 'cover_letter'
+  if (!job.calendarEventId) return 'calendar'
+  if (job.status === '관심' && job.dday <= 3) return 'status_change'
+  return 'apply_now'
+}
+
+function pickPriority(dday: number): AgentSuggestion['priority'] {
+  if (dday <= 3) return 'high'
+  if (dday <= 7) return 'medium'
+  return 'low'
+}
+
 export async function analyzeUrgentJobs(
   jobs: {
     id: string
@@ -235,41 +253,31 @@ export async function analyzeUrgentJobs(
 ): Promise<AgentSuggestion[]> {
   const apiKey = import.meta.env.VITE_CLAUDE_API_KEY
 
-  const jobList = jobs.map((j) => {
-    const diff = j.deadline
+  // 액션 결정은 코드에서, Claude는 이유 설명만 담당
+  const decisions = jobs.map((j) => {
+    const dday = j.deadline
       ? Math.ceil((new Date(j.deadline).getTime() - Date.now()) / 86400000)
-      : null
-    return `- id:${j.id} | 회사:${j.company} | 포지션:${j.position} | 상태:${j.status} | D-Day:${diff ?? '없음'} | 자소서:${j.coverLetter ? '작성됨' : '미작성'} | 캘린더:${j.calendarEventId ? '등록됨' : '미등록'}`
-  }).join('\n')
+      : 0
+    return { ...j, dday, action: pickAction({ ...j, dday }), priority: pickPriority(dday) }
+  })
 
-  const prompt = `너는 취업 준비를 도와주는 AI 에이전트야. 아래 마감 임박 공고들을 분석해서 각 공고에 대해 가장 중요한 액션 1개씩을 추천해줘.
+  const jobList = decisions.map((j) =>
+    `- id:${j.id} | 회사:${j.company} | 포지션:${j.position} | D-${j.dday} | 액션:${j.action}`
+  ).join('\n')
+
+  const prompt = `너는 취업 준비 AI 에이전트야. 아래 공고별로 지정된 액션에 맞는 짧은 이유를 한 문장으로 작성해줘.
+
+액션 의미:
+- cover_letter: 자소서 미작성
+- calendar: 캘린더 미등록
+- status_change: 관심 상태인데 마감 임박
+- apply_now: 마감 임박, 공고 링크 확인 필요
 
 공고 목록:
 ${jobList}
 
-액션 유형:
-- cover_letter: 자소서가 미작성이고 마감이 가까울 때
-- calendar: 캘린더에 미등록된 공고
-- status_change: 상태가 '관심'인데 마감이 3일 이내일 때
-- apply_now: 지원 완료하지 않았고 마감이 1일 이내일 때
-
-priority 기준:
-- high: D-3 이내
-- medium: D-4 ~ D-7
-- low: 그 외
-
-JSON 배열로만 반환 (다른 텍스트 없이):
-[
-  {
-    "jobId": "id값",
-    "company": "회사명",
-    "position": "포지션명",
-    "dday": 3,
-    "action": "cover_letter",
-    "reason": "마감 3일 전인데 자소서가 아직 작성되지 않았어요",
-    "priority": "high"
-  }
-]`
+JSON 배열로만 반환:
+[{ "jobId": "id값", "reason": "한 문장 이유" }]`
 
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -281,7 +289,7 @@ JSON 배열로만 반환 (다른 텍스트 없이):
     },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 800,
+      max_tokens: 400,
       messages: [{ role: 'user', content: prompt }],
     }),
   })
@@ -291,8 +299,18 @@ JSON 배열로만 반환 (다른 텍스트 없이):
   const data = await res.json()
   const content = data.content[0].text as string
   const match = content.match(/\[[\s\S]*\]/)
-  if (!match) return []
-  return JSON.parse(match[0]) as AgentSuggestion[]
+  const reasons: { jobId: string; reason: string }[] = match ? JSON.parse(match[0]) : []
+  const reasonMap = new Map(reasons.map((r) => [r.jobId, r.reason]))
+
+  return decisions.map((j) => ({
+    jobId: j.id,
+    company: j.company,
+    position: j.position,
+    dday: j.dday,
+    action: j.action,
+    reason: reasonMap.get(j.id) ?? '',
+    priority: j.priority,
+  }))
 }
 
 export async function suggestTechStack(
