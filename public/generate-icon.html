@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head><title>Icon Generator</title></head>
+<body style="background:#1a1a2e; display:flex; flex-direction:column; align-items:center; padding:40px; font-family:sans-serif;">
+<canvas id="c" width="512" height="512" style="border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,0.5);"></canvas>
+<br>
+<button onclick="download()" style="margin-top:20px;padding:12px 32px;background:#4F46E5;color:white;border:none;border-radius:8px;font-size:16px;cursor:pointer;">
+  📥 PNG 다운로드 (512×512)
+</button>
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+
+// Background gradient
+const bg = ctx.createLinearGradient(0, 0, 512, 512);
+bg.addColorStop(0, '#4F46E5');
+bg.addColorStop(1, '#6D28D9');
+ctx.fillStyle = bg;
+ctx.beginPath();
+ctx.roundRect(0, 0, 512, 512, 90);
+ctx.fill();
+
+// White card shadow
+ctx.shadowColor = 'rgba(0,0,0,0.25)';
+ctx.shadowBlur = 30;
+ctx.shadowOffsetY = 10;
+
+// White card
+ctx.fillStyle = 'rgba(255,255,255,0.97)';
+ctx.beginPath();
+ctx.roundRect(72, 140, 368, 280, 28);
+ctx.fill();
+
+ctx.shadowColor = 'transparent';
+ctx.shadowBlur = 0;
+ctx.shadowOffsetY = 0;
+
+// Card top accent bar
+ctx.fillStyle = '#4F46E5';
+ctx.beginPath();
+ctx.roundRect(72, 140, 368, 10, [28, 28, 0, 0]);
+ctx.fill();
+
+// Bar chart bars
+const bars = [
+  { x: 110, h: 100, color: '#C7D2FE' },
+  { x: 180, h: 155, color: '#818CF8' },
+  { x: 250, h: 75,  color: '#C7D2FE' },
+  { x: 320, h: 125, color: '#6366F1' },
+  { x: 390, h: 90,  color: '#818CF8' },
+];
+const baseY = 390;
+bars.forEach(b => {
+  // bar shadow
+  ctx.fillStyle = 'rgba(79,70,229,0.08)';
+  ctx.beginPath();
+  ctx.roundRect(b.x + 4, baseY - b.h + 4, 42, b.h, [6,6,0,0]);
+  ctx.fill();
+  // bar
+  ctx.fillStyle = b.color;
+  ctx.beginPath();
+  ctx.roundRect(b.x, baseY - b.h, 42, b.h, [6,6,0,0]);
+  ctx.fill();
+});
+
+// Trend line
+ctx.strokeStyle = '#4F46E5';
+ctx.lineWidth = 5;
+ctx.lineCap = 'round';
+ctx.lineJoin = 'round';
+ctx.setLineDash([]);
+ctx.beginPath();
+ctx.moveTo(131, baseY - 100);
+ctx.lineTo(201, baseY - 155);
+ctx.lineTo(271, baseY - 75);
+ctx.lineTo(341, baseY - 125);
+ctx.lineTo(411, baseY - 90);
+ctx.stroke();
+
+// Trend line dots
+[
+  [131, baseY-100], [201, baseY-155], [271, baseY-75],
+  [341, baseY-125], [411, baseY-90]
+].forEach(([x,y]) => {
+  ctx.fillStyle = 'white';
+  ctx.beginPath();
+  ctx.arc(x, y, 7, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = '#4F46E5';
+  ctx.beginPath();
+  ctx.arc(x, y, 4, 0, Math.PI*2);
+  ctx.fill();
+});
+
+// Top label "JT"
+ctx.fillStyle = 'white';
+ctx.font = 'bold 52px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('JT', 138, 118);
+
+// Small tag
+ctx.fillStyle = 'rgba(255,255,255,0.2)';
+ctx.beginPath();
+ctx.roundRect(88, 88, 100, 42, 21);
+ctx.fill();
+
+// Green success badge (top-right)
+const bx = 390, by = 105, br = 48;
+ctx.fillStyle = '#10B981';
+ctx.shadowColor = 'rgba(16,185,129,0.4)';
+ctx.shadowBlur = 20;
+ctx.beginPath();
+ctx.arc(bx, by, br, 0, Math.PI*2);
+ctx.fill();
+ctx.shadowBlur = 0;
+
+// Checkmark
+ctx.strokeStyle = 'white';
+ctx.lineWidth = 9;
+ctx.lineCap = 'round';
+ctx.lineJoin = 'round';
+ctx.beginPath();
+ctx.moveTo(bx-18, by);
+ctx.lineTo(bx-5, by+16);
+ctx.lineTo(bx+20, by-18);
+ctx.stroke();
+
+function download() {
+  const a = document.createElement('a');
+  a.download = 'job-tracker-icon-512.png';
+  a.href = c.toDataURL('image/png');
+  a.click();
+}
+</script>
+</body>
+</html>

@@ -7,12 +7,12 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png'],
+      includeAssets: ['icons/icon16.png', 'icons/icon32.png', 'icons/icon48.png', 'icons/icon128.png', 'icons/icon192.png', 'icons/icon512.png'],
       manifest: {
         name: 'Job Tracker Dashboard',
         short_name: 'Job Tracker',
         description: '채용 지원 현황을 관리하는 대시보드',
-        theme_color: '#2563eb',
+        theme_color: '#AADD88',
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
@@ -20,17 +20,17 @@ export default defineConfig({
         start_url: '/',
         icons: [
           {
-            src: 'icon-192.png',
+            src: 'icons/icon192.png',
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: 'icon-512.png',
+            src: 'icons/icon512.png',
             sizes: '512x512',
             type: 'image/png',
           },
           {
-            src: 'icon-512.png',
+            src: 'icons/icon512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable',
