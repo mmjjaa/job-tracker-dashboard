@@ -88,7 +88,7 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
                 <button
                   onClick={() => onViewChange('table')}
                   className={`px-3 py-2 text-sm transition-colors rounded-l-lg ${
-                    view === 'table' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:bg-gray-50'
+                    view === 'table' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-50'
                   }`}
                 >
                   📋 테이블
@@ -98,7 +98,7 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
                 <button
                   onClick={() => onViewChange('kanban')}
                   className={`px-3 py-2 text-sm transition-colors rounded-r-lg ${
-                    view === 'kanban' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:bg-gray-50'
+                    view === 'kanban' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-50'
                   }`}
                 >
                   🗂 칸반
@@ -112,7 +112,7 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
             <Tooltip text="홈 화면에 앱으로 설치해요">
               <button
                 onClick={install}
-                className="hidden md:flex items-center gap-1.5 text-blue-600 hover:text-blue-700 text-sm border border-blue-200 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg transition-colors font-medium"
+                className="hidden md:flex items-center gap-1.5 text-primary-600 hover:text-primary-700 text-sm border border-primary-200 bg-primary-50 hover:bg-primary-100 px-3 py-2 rounded-lg transition-colors font-medium"
               >
                 ⬇️ 앱 설치
               </button>
@@ -134,11 +134,11 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
             <Tooltip text="서울시 공공 API로 공고를 검색해요">
               <button
                 onClick={onSearchJob}
-                className="hidden md:flex items-center gap-1.5 text-gray-600 hover:text-blue-600 text-sm border border-gray-200 px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors font-medium"
+                className="hidden md:flex items-center gap-1.5 text-gray-600 hover:text-primary-600 text-sm border border-gray-200 px-3 py-2 rounded-lg hover:bg-primary-50 transition-colors font-medium"
               >
                 🔍 공고 검색
                 {keywords.length > 0 && (
-                  <span className="bg-blue-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center leading-none">
+                  <span className="bg-primary-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center leading-none">
                     {keywords.length}
                   </span>
                 )}
@@ -151,7 +151,7 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
             <Tooltip text="새 공고를 직접 입력해요">
               <button
                 onClick={onAddJob}
-                className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-3 md:px-4 py-2 rounded-lg transition-colors"
+                className="bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium px-3 md:px-4 py-2 rounded-lg transition-colors"
               >
                 + 공고 추가
               </button>
@@ -164,7 +164,7 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
               onClick={() => setMenuOpen((v) => !v)}
               className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 transition-colors"
             >
-              <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold">
+              <div className="w-6 h-6 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 text-xs font-bold">
                 {isGuest ? 'G' : (userEmail[0] ?? '?').toUpperCase()}
               </div>
               <span className="hidden md:block text-xs text-gray-600 max-w-[120px] truncate">
@@ -208,12 +208,12 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
         {keywords.map((kw) => (
           <span
             key={kw}
-            className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 text-xs px-2.5 py-1 rounded-full font-medium"
+            className="inline-flex items-center gap-1 bg-primary-50 text-primary-700 text-xs px-2.5 py-1 rounded-full font-medium"
           >
             {kw}
             <button
               onClick={() => removeKeyword(kw)}
-              className="text-blue-400 hover:text-blue-700 leading-none"
+              className="text-primary-400 hover:text-primary-700 leading-none"
             >
               ✕
             </button>
@@ -228,13 +228,13 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
             onKeyDown={handleKwSubmit}
             onBlur={() => { setKwInput(''); setKwInputOpen(false) }}
             placeholder="입력 후 Enter"
-            className="text-xs border border-blue-300 rounded-full px-2.5 py-1 outline-none focus:ring-2 focus:ring-blue-300 w-28"
+            className="text-xs border border-primary-300 rounded-full px-2.5 py-1 outline-none focus:ring-2 focus:ring-primary-300 w-28"
           />
         ) : (
           <Tooltip text="키워드와 일치하는 공고를 하이라이트해요" position="top">
             <button
               onClick={openKwInput}
-              className="text-xs text-gray-400 hover:text-blue-600 border border-dashed border-gray-300 hover:border-blue-400 px-2.5 py-1 rounded-full transition-colors"
+              className="text-xs text-gray-400 hover:text-primary-600 border border-dashed border-gray-300 hover:border-primary-400 px-2.5 py-1 rounded-full transition-colors"
             >
               + 키워드 추가
             </button>

@@ -45,7 +45,7 @@ export default function Sidebar({ onSignOut, userEmail, isGuest, page, onPageCha
           onClick={() => onPageChange('dashboard')}
           className="flex items-center gap-3 w-full text-left hover:opacity-80 transition-opacity"
         >
-          <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-[#AADD88] flex items-center justify-center shrink-0">
             <span className="text-white text-xs font-bold tracking-tight">JT</span>
           </div>
           <div>
@@ -66,16 +66,16 @@ export default function Sidebar({ onSignOut, userEmail, isGuest, page, onPageCha
               onClick={() => onPageChange(item.id)}
               className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all duration-150 group
                 ${isActive
-                  ? 'bg-blue-50 border-l-4 border-blue-600 pl-2.5'
+                  ? 'bg-primary-50 border-l-4 border-primary-600 pl-2.5'
                   : 'border-l-4 border-transparent hover:bg-gray-50'
                 }`}
             >
               <span className="text-xl shrink-0">{item.icon}</span>
               <div className="min-w-0">
-                <p className={`text-sm font-semibold leading-tight ${isActive ? 'text-blue-700' : 'text-gray-700 group-hover:text-gray-900'}`}>
+                <p className={`text-sm font-semibold leading-tight ${isActive ? 'text-primary-700' : 'text-gray-700 group-hover:text-gray-900'}`}>
                   {item.label}
                 </p>
-                <p className={`text-xs mt-0.5 leading-tight ${isActive ? 'text-blue-500' : 'text-gray-400'}`}>
+                <p className={`text-xs mt-0.5 leading-tight ${isActive ? 'text-primary-500' : 'text-gray-400'}`}>
                   {item.sublabel}
                 </p>
               </div>
@@ -168,7 +168,7 @@ export default function Sidebar({ onSignOut, userEmail, isGuest, page, onPageCha
               className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left border-l-4 border-transparent hover:bg-gray-50 transition-all duration-150 disabled:opacity-40 group"
             >
               {connecting
-                ? <div className="w-5 h-5 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin shrink-0" />
+                ? <div className="w-5 h-5 border-2 border-gray-300 border-t-primary-500 rounded-full animate-spin shrink-0" />
                 : <span className="text-xl shrink-0">📆</span>
               }
               <div className="min-w-0">
@@ -185,7 +185,7 @@ export default function Sidebar({ onSignOut, userEmail, isGuest, page, onPageCha
       {/* 하단 유저 정보 */}
       <div className="p-4 border-t border-gray-100">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold shrink-0">
+          <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 text-xs font-bold shrink-0">
             {isGuest ? 'G' : (userEmail[0] ?? '?').toUpperCase()}
           </div>
           <div className="min-w-0">

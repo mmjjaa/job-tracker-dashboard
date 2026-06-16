@@ -89,14 +89,14 @@ export default function CoverLetterModal({ job, onClose }: CoverLetterModalProps
               placeholder="예: React 프로젝트 2년, 팀 리더 경험, 관련 수상 이력 등"
               rows={3}
               disabled={isGenerating}
-              className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300 resize-none disabled:bg-gray-50"
+              className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-primary-300 resize-none disabled:bg-gray-50"
             />
           </div>
 
           <button
             onClick={handleGenerate}
             disabled={isGenerating}
-            className="w-full py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+            className="w-full py-2.5 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors"
           >
             {isGenerating ? '초안 생성 중...' : result ? '다시 생성' : '✍️ 자소서 초안 생성'}
           </button>
@@ -110,7 +110,7 @@ export default function CoverLetterModal({ job, onClose }: CoverLetterModalProps
                 <div className="flex items-center gap-3">
                   <button
                     onClick={handleCopyAll}
-                    className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                    className="text-xs text-primary-600 hover:text-primary-800 font-medium"
                   >
                     {copied === 'motivation' ? '✅ 복사됨' : '전체 복사'}
                   </button>
@@ -126,7 +126,7 @@ export default function CoverLetterModal({ job, onClose }: CoverLetterModalProps
               {SECTIONS.map(({ key, label }) => (
                 <div key={key} className="border border-gray-200 rounded-xl p-4 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-indigo-700">[{label}]</span>
+                    <span className="text-xs font-semibold text-primary-700">[{label}]</span>
                     <button
                       onClick={() => handleCopy(key)}
                       className="text-xs text-gray-400 hover:text-gray-600 transition-colors"

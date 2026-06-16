@@ -2,6 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --p-50:  #f0f9ea;   /* 배경 액센트 (hover, tag bg) */
+  --p-100: #d5eebc;   /* 태그 배경 */
+  --p-200: #AADD88;   /* 브랜드 색상 — 로고·테두리·배지 배경 */
+  --p-300: #7ccc55;
+  --p-400: #5cb53c;
+  --p-500: #48a02e;
+  --p-600: #388a22;   /* 버튼·활성 배경 — 흰 텍스트 대비 5:1 이상 */
+  --p-700: #2c7018;   /* hover */
+  --p-800: #1e5010;   /* 텍스트·아이콘 */
+  --p-900: #123008;
+}
+
+@layer utilities {
+  /* background */
+  .bg-primary-50  { background-color: var(--p-50); }
+  .bg-primary-100 { background-color: var(--p-100); }
+  .bg-primary-400 { background-color: var(--p-400); }
+  .bg-primary-500 { background-color: var(--p-500); }
+  .bg-primary-600 { background-color: var(--p-600); }
+  .hover\:bg-primary-50:hover  { background-color: var(--p-50); }
+  .hover\:bg-primary-100:hover { background-color: var(--p-100); }
+  .hover\:bg-primary-700:hover { background-color: var(--p-700); }
+
+  /* text */
+  .text-primary-400 { color: var(--p-400); }
+  .text-primary-500 { color: var(--p-500); }
+  .text-primary-600 { color: var(--p-600); }
+  .text-primary-700 { color: var(--p-700); }
+  .text-primary-800 { color: var(--p-800); }
+  .hover\:text-primary-600:hover { color: var(--p-600); }
+  .hover\:text-primary-700:hover { color: var(--p-700); }
+  .hover\:text-primary-800:hover { color: var(--p-800); }
+
+  /* border */
+  .border-primary-100 { border-color: var(--p-100); }
+  .border-primary-200 { border-color: var(--p-200); }
+  .border-primary-300 { border-color: var(--p-300); }
+  .border-primary-500 { border-color: var(--p-500); }
+  .border-primary-600 { border-color: var(--p-600); }
+  .border-t-primary-500 { border-top-color: var(--p-500); }
+  .hover\:border-primary-300:hover { border-color: var(--p-300); }
+  .hover\:border-primary-400:hover { border-color: var(--p-400); }
+
+  /* ring (focus) */
+  .ring-primary-200 { --tw-ring-color: var(--p-200); }
+  .focus\:ring-primary-300:focus { --tw-ring-color: var(--p-300); }
+
+  /* gradient */
+  .from-primary-600 { --tw-gradient-from: var(--p-600); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(170,221,136,0)); }
+  .hover\:from-primary-700:hover { --tw-gradient-from: var(--p-700); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(142,204,110,0)); }
+}
+
 * {
   box-sizing: border-box;
 }

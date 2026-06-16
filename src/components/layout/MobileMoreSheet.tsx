@@ -55,7 +55,7 @@ export default function MobileMoreSheet({
 
           {/* 유저 정보 */}
           <div className="flex items-center gap-3 py-4 border-b border-gray-100">
-            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold shrink-0">
+            <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 font-bold shrink-0">
               {isGuest ? 'G' : (userEmail[0] ?? '?').toUpperCase()}
             </div>
             <div>
@@ -105,7 +105,7 @@ export default function MobileMoreSheet({
                 className="w-full flex items-center gap-3 py-3 px-1 rounded-xl hover:bg-gray-50 transition-colors mt-1 disabled:opacity-40"
               >
                 {connecting
-                  ? <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin shrink-0" />
+                  ? <div className="w-6 h-6 border-2 border-gray-300 border-t-primary-500 rounded-full animate-spin shrink-0" />
                   : <span className="text-2xl shrink-0">📆</span>
                 }
                 <div className="text-left">

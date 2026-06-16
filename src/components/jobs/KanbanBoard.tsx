@@ -7,7 +7,7 @@ import KanbanCard from './KanbanCard'
 import JobDetailModal from './JobDetailModal'
 
 const COLUMNS: { status: JobStatus; label: string; color: string; bg: string }[] = [
-  { status: '관심',    label: '관심',    color: 'text-blue-700',   bg: 'bg-blue-50' },
+  { status: '관심',    label: '관심',    color: 'text-primary-700',   bg: 'bg-primary-50' },
   { status: '지원예정', label: '지원예정', color: 'text-purple-700', bg: 'bg-purple-50' },
   { status: '지원완료', label: '지원완료', color: 'text-green-700',  bg: 'bg-green-50' },
   { status: '결과대기', label: '결과대기', color: 'text-yellow-700', bg: 'bg-yellow-50' },
@@ -50,7 +50,7 @@ export default function KanbanBoard({ onEdit }: Props) {
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                     className={`flex-1 rounded-b-xl p-2 space-y-2 transition-colors ${
-                      snapshot.isDraggingOver ? 'bg-indigo-50' : 'bg-gray-100'
+                      snapshot.isDraggingOver ? 'bg-primary-50' : 'bg-gray-100'
                     }`}
                   >
                     {columnJobs.map((job, index) => (

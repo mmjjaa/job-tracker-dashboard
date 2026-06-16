@@ -51,12 +51,12 @@ export default function JobTable({ onEdit }: JobTableProps) {
           placeholder="회사명 또는 포지션 검색..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300 min-w-0"
+          className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-primary-300 min-w-0"
         />
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as JobStatus | 'all')}
-          className="text-sm border border-gray-200 rounded-lg px-2 md:px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300 shrink-0"
+          className="text-sm border border-gray-200 rounded-lg px-2 md:px-3 py-2 outline-none focus:ring-2 focus:ring-primary-300 shrink-0"
         >
           <option value="all">전체</option>
           {JOB_STATUSES.map((s) => (
@@ -83,7 +83,7 @@ export default function JobTable({ onEdit }: JobTableProps) {
                         href={job.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-semibold text-gray-900 hover:text-indigo-600 hover:underline underline-offset-2"
+                        className="font-semibold text-gray-900 hover:text-primary-600 hover:underline underline-offset-2"
                       >
                         {job.company}
                       </a>
@@ -101,7 +101,7 @@ export default function JobTable({ onEdit }: JobTableProps) {
                 {job.techStack.length > 0 && (
                   <div className="flex flex-wrap gap-1">
                     {job.techStack.slice(0, 4).map((t) => (
-                      <span key={t} className="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">
+                      <span key={t} className="text-xs bg-primary-50 text-primary-600 px-2 py-0.5 rounded-full">
                         {t}
                       </span>
                     ))}
@@ -121,7 +121,7 @@ export default function JobTable({ onEdit }: JobTableProps) {
                   <select
                     value={job.status}
                     onChange={(e) => updateStatus(job.id, e.target.value as JobStatus)}
-                    className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 outline-none focus:ring-2 focus:ring-indigo-300"
+                    className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 outline-none focus:ring-2 focus:ring-primary-300"
                   >
                     {JOB_STATUSES.map((s) => (
                       <option key={s} value={s}>{s}</option>
@@ -133,14 +133,14 @@ export default function JobTable({ onEdit }: JobTableProps) {
                       className={`text-xs px-2 py-1.5 rounded-lg font-medium transition-colors ${
                         job.coverLetter
                           ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
-                          : 'bg-gray-100 text-gray-500 hover:bg-indigo-50 hover:text-indigo-600'
+                          : 'bg-gray-100 text-gray-500 hover:bg-primary-50 hover:text-primary-600'
                       }`}
                     >
                       {job.coverLetter ? '자소서 수정' : '자소서 초안 작성'}
                     </button>
                     <button
                       onClick={() => onEdit(job)}
-                      className="text-gray-400 hover:text-indigo-600 transition-colors"
+                      className="text-gray-400 hover:text-primary-600 transition-colors"
                       title="수정"
                     >
                       ✏️
@@ -191,7 +191,7 @@ export default function JobTable({ onEdit }: JobTableProps) {
                           href={job.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="hover:text-indigo-600 underline-offset-2 hover:underline"
+                          className="hover:text-primary-600 underline-offset-2 hover:underline"
                         >
                           {job.company}
                         </a>
@@ -206,7 +206,7 @@ export default function JobTable({ onEdit }: JobTableProps) {
                       <div className="flex flex-wrap gap-1">
                         {job.techStack.length > 0
                           ? job.techStack.slice(0, 3).map((t) => (
-                              <span key={t} className="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">
+                              <span key={t} className="text-xs bg-primary-50 text-primary-600 px-2 py-0.5 rounded-full">
                                 {t}
                               </span>
                             ))
@@ -221,7 +221,7 @@ export default function JobTable({ onEdit }: JobTableProps) {
                       <select
                         value={job.status}
                         onChange={(e) => updateStatus(job.id, e.target.value as JobStatus)}
-                        className="text-xs border border-gray-200 rounded-lg px-2 py-1 outline-none focus:ring-2 focus:ring-indigo-300 cursor-pointer"
+                        className="text-xs border border-gray-200 rounded-lg px-2 py-1 outline-none focus:ring-2 focus:ring-primary-300 cursor-pointer"
                       >
                         {JOB_STATUSES.map((s) => (
                           <option key={s} value={s}>{s}</option>
@@ -241,14 +241,14 @@ export default function JobTable({ onEdit }: JobTableProps) {
                           className={`text-xs px-2 py-1 rounded-lg font-medium transition-colors whitespace-nowrap ${
                             job.coverLetter
                               ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
-                              : 'bg-gray-100 text-gray-500 hover:bg-indigo-50 hover:text-indigo-600'
+                              : 'bg-gray-100 text-gray-500 hover:bg-primary-50 hover:text-primary-600'
                           }`}
                         >
                           {job.coverLetter ? '자소서 수정' : '자소서 초안 작성'}
                         </button>
                         <button
                           onClick={() => onEdit(job)}
-                          className="text-gray-400 hover:text-indigo-600 transition-colors text-base"
+                          className="text-gray-400 hover:text-primary-600 transition-colors text-base"
                           title="수정"
                         >
                           ✏️

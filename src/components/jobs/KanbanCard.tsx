@@ -47,7 +47,7 @@ export default function KanbanCard({ job, index, onEdit: _onEdit, onDetail }: Pr
           onClick={() => onDetail(job)}
           className={`bg-white rounded-xl border-l-4 border border-gray-100 ${borderColor} p-3 cursor-pointer select-none space-y-2 transition-all duration-150 ${
             snapshot.isDragging
-              ? 'shadow-xl rotate-1 border-blue-200'
+              ? 'shadow-xl rotate-1 border-primary-200'
               : 'hover:shadow-md hover:border-l-4'
           }`}
         >
@@ -75,7 +75,7 @@ export default function KanbanCard({ job, index, onEdit: _onEdit, onDetail }: Pr
           {job.techStack.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {job.techStack.slice(0, 3).map((t) => (
-                <span key={t} className="text-xs bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full">
+                <span key={t} className="text-xs bg-primary-50 text-primary-600 px-1.5 py-0.5 rounded-full">
                   {t}
                 </span>
               ))}

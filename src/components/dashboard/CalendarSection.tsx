@@ -3,7 +3,7 @@ import { useJobStore } from '../../store/jobStore'
 import type { Job } from '../../types'
 
 const STATUS_STYLE: Record<string, { dot: string; badge: string; label: string }> = {
-  '관심':    { dot: 'bg-blue-400',    badge: 'bg-blue-50 text-blue-600',      label: '관심' },
+  '관심':    { dot: 'bg-primary-400',    badge: 'bg-primary-50 text-primary-600',      label: '관심' },
   '지원예정': { dot: 'bg-purple-400',  badge: 'bg-purple-50 text-purple-600',  label: '지원예정' },
   '지원완료': { dot: 'bg-emerald-400', badge: 'bg-emerald-50 text-emerald-600', label: '지원완료' },
   '결과대기': { dot: 'bg-amber-400',   badge: 'bg-amber-50 text-amber-600',    label: '결과대기' },
@@ -96,7 +96,7 @@ export default function CalendarSection() {
                 <span className="text-gray-400 font-normal text-lg">{curY}</span>
               </h2>
               {thisMonthDeadlines > 0 && (
-                <span className="text-xs bg-indigo-50 text-indigo-600 font-semibold px-2.5 py-0.5 rounded-full">
+                <span className="text-xs bg-primary-50 text-primary-600 font-semibold px-2.5 py-0.5 rounded-full">
                   마감 {thisMonthDeadlines}건
                 </span>
               )}
@@ -129,7 +129,7 @@ export default function CalendarSection() {
               <div
                 key={d}
                 className={`text-center text-xs font-semibold py-2 ${
-                  i === 0 ? 'text-red-400' : i === 6 ? 'text-blue-400' : 'text-gray-400'
+                  i === 0 ? 'text-red-400' : i === 6 ? 'text-primary-400' : 'text-gray-400'
                 }`}
               >
                 {d}
@@ -153,20 +153,20 @@ export default function CalendarSection() {
                   key={idx}
                   onClick={() => setSelected(isSelected ? null : cell)}
                   className={`relative flex flex-col items-center pt-1.5 pb-2 rounded-xl transition-all
-                    ${isSelected ? 'bg-indigo-50 ring-1 ring-indigo-200' : 'hover:bg-gray-50'}
+                    ${isSelected ? 'bg-primary-50 ring-1 ring-primary-200' : 'hover:bg-gray-50'}
                     ${!cell.current ? 'opacity-25' : ''}
                   `}
                 >
                   <span
                     className={`w-7 h-7 flex items-center justify-center text-sm rounded-full font-medium transition-colors
                       ${isToday
-                        ? 'bg-indigo-600 text-white font-bold shadow-sm'
+                        ? 'bg-primary-600 text-white font-bold shadow-sm'
                         : isSelected
-                        ? 'text-indigo-700 font-bold'
+                        ? 'text-primary-700 font-bold'
                         : colIdx === 0
                         ? 'text-red-500'
                         : colIdx === 6
-                        ? 'text-blue-500'
+                        ? 'text-primary-500'
                         : 'text-gray-800'
                       }
                     `}
@@ -224,7 +224,7 @@ export default function CalendarSection() {
                       label: job.status,
                     }
                     return (
-                      <li key={job.id} className="bg-gray-50 rounded-xl p-3 hover:bg-indigo-50 transition-colors cursor-default">
+                      <li key={job.id} className="bg-gray-50 rounded-xl p-3 hover:bg-primary-50 transition-colors cursor-default">
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0">
                             <p className="text-sm font-semibold text-gray-900 truncate">{job.company}</p>
@@ -246,7 +246,7 @@ export default function CalendarSection() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center flex-1 text-center gap-3 py-8">
-              <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-lg">
+              <div className="w-10 h-10 bg-primary-50 rounded-full flex items-center justify-center text-lg">
                 📅
               </div>
               <div>
@@ -254,7 +254,7 @@ export default function CalendarSection() {
                 <p className="text-xs text-gray-400 mt-1">마감 공고를 확인할 수 있어요</p>
               </div>
               {thisMonthDeadlines > 0 && (
-                <span className="text-xs text-indigo-500 font-semibold bg-indigo-50 px-3 py-1 rounded-full">
+                <span className="text-xs text-primary-500 font-semibold bg-primary-50 px-3 py-1 rounded-full">
                   이번 달 {thisMonthDeadlines}건 마감 예정
                 </span>
               )}

@@ -54,7 +54,7 @@ export default function AuthPage({ onGuestStart }: Props) {
               key={m}
               onClick={() => { setMode(m); setError(''); setMessage('') }}
               className={`flex-1 py-2 text-sm font-medium transition-colors ${
-                mode === m ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-50'
+                mode === m ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-50'
               }`}
             >
               {m === 'login' ? '로그인' : '회원가입'}
@@ -70,7 +70,7 @@ export default function AuthPage({ onGuestStart }: Props) {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-300"
+              className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary-300"
               placeholder="you@example.com"
             />
           </label>
@@ -81,7 +81,7 @@ export default function AuthPage({ onGuestStart }: Props) {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-300"
+              className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary-300"
               placeholder="6자 이상"
               minLength={6}
             />
@@ -93,7 +93,7 @@ export default function AuthPage({ onGuestStart }: Props) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+            className="w-full py-2.5 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors"
           >
             {loading ? '처리 중...' : mode === 'login' ? '로그인' : '회원가입'}
           </button>

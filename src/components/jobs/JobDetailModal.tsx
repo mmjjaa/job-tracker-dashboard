@@ -7,7 +7,7 @@ import { useGoogleCalendar } from '../../contexts/GoogleCalendarContext'
 import { createCalendarEvent, patchCalendarEvent, deleteCalendarEvent } from '../../lib/googleCalendar'
 
 const STATUS_BADGE: Record<string, string> = {
-  '관심':    'bg-blue-50 text-blue-600',
+  '관심':    'bg-primary-50 text-primary-600',
   '지원예정': 'bg-purple-50 text-purple-600',
   '지원완료': 'bg-emerald-50 text-emerald-600',
   '결과대기': 'bg-amber-50 text-amber-600',
@@ -29,7 +29,7 @@ const STATUS_COLOR: Record<string, string> = {
 
 function getScoreColor(score: number): string {
   if (score >= 80) return 'bg-emerald-500'
-  if (score >= 60) return 'bg-indigo-500'
+  if (score >= 60) return 'bg-primary-500'
   if (score >= 40) return 'bg-amber-500'
   return 'bg-red-400'
 }
@@ -217,7 +217,7 @@ export default function JobDetailModal({ job, onClose, onEdit }: Props) {
                     href={job.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-indigo-600 hover:underline truncate block"
+                    className="text-sm text-primary-600 hover:underline truncate block"
                   >
                     {job.url}
                   </a>
@@ -232,7 +232,7 @@ export default function JobDetailModal({ job, onClose, onEdit }: Props) {
               <p className="text-xs font-semibold text-gray-400 mb-2">🛠 기술스택</p>
               <div className="flex flex-wrap gap-1.5">
                 {job.techStack.map((t) => (
-                  <span key={t} className="text-xs bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-full font-medium">
+                  <span key={t} className="text-xs bg-primary-50 text-primary-600 px-2.5 py-1 rounded-full font-medium">
                     {t}
                   </span>
                 ))}
@@ -263,7 +263,7 @@ export default function JobDetailModal({ job, onClose, onEdit }: Props) {
 
               {matchLoading && (
                 <div className="flex items-center gap-2 text-sm text-gray-500 py-2">
-                  <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
                   Claude AI가 분석 중입니다...
                 </div>
               )}
@@ -302,9 +302,9 @@ export default function JobDetailModal({ job, onClose, onEdit }: Props) {
                   </div>
 
                   {/* 종합 요약 */}
-                  <div className="bg-indigo-50 rounded-lg px-3 py-2.5">
-                    <p className="text-xs font-semibold text-indigo-700 mb-1">종합</p>
-                    <p className="text-sm text-indigo-800 leading-relaxed">{matchResult.summary}</p>
+                  <div className="bg-primary-50 rounded-lg px-3 py-2.5">
+                    <p className="text-xs font-semibold text-primary-700 mb-1">종합</p>
+                    <p className="text-sm text-primary-800 leading-relaxed">{matchResult.summary}</p>
                   </div>
                 </div>
               )}
@@ -344,7 +344,7 @@ export default function JobDetailModal({ job, onClose, onEdit }: Props) {
               </button>
               <button
                 onClick={() => { onClose(); onEdit(job) }}
-                className="px-4 py-2 text-sm text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+                className="px-4 py-2 text-sm text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors font-medium"
               >
                 ✏ 수정하기
               </button>
@@ -359,7 +359,7 @@ export default function JobDetailModal({ job, onClose, onEdit }: Props) {
               title={!hasProfile ? '먼저 내 프로필을 등록해주세요' : ''}
               className={`mt-3 w-full py-2.5 text-sm rounded-xl font-medium transition-colors flex items-center justify-center gap-2 ${
                 hasProfile
-                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700'
+                  ? 'bg-gradient-to-r from-primary-600 to-purple-600 text-white hover:from-primary-700 hover:to-purple-700'
                   : 'bg-gray-100 text-gray-400 cursor-not-allowed'
               }`}
             >
@@ -379,7 +379,7 @@ export default function JobDetailModal({ job, onClose, onEdit }: Props) {
           {matchResult && !matchLoading && (
             <button
               onClick={handleAnalyze}
-              className="mt-3 w-full py-2 text-xs text-indigo-600 hover:text-indigo-800 transition-colors"
+              className="mt-3 w-full py-2 text-xs text-primary-600 hover:text-primary-800 transition-colors"
             >
               🔄 다시 분석
             </button>

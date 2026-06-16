@@ -3,7 +3,7 @@ import StatsCard from './StatsCard'
 import type { JobStatus } from '../../types'
 
 const CARDS: { status: JobStatus | 'all'; label: string; icon: string; accentClass: string; highlight?: boolean; countColorClass?: string }[] = [
-  { status: 'all',      label: '전체 공고', icon: '📋', accentClass: 'bg-blue-500' },
+  { status: 'all',      label: '전체 공고', icon: '📋', accentClass: 'bg-primary-500' },
   { status: '관심',     label: '관심',      icon: '🔖', accentClass: 'bg-sky-400' },
   { status: '지원완료', label: '지원완료',  icon: '✅', accentClass: 'bg-emerald-500', highlight: true, countColorClass: 'text-emerald-600' },
   { status: '결과대기', label: '결과대기',  icon: '⏳', accentClass: 'bg-amber-400',  highlight: true, countColorClass: 'text-amber-500' },
@@ -40,7 +40,7 @@ export default function StatsSection() {
         />
 
         <div className="relative z-10">
-          <p className="text-blue-600 text-xs font-bold uppercase tracking-widest mb-2">취업 준비 대시보드</p>
+          <p className="text-primary-600 text-xs font-bold uppercase tracking-widest mb-2">취업 준비 대시보드</p>
           <h2 className="text-2xl font-bold text-gray-900 leading-tight">
             안녕하세요 👋
           </h2>
@@ -48,11 +48,11 @@ export default function StatsSection() {
 
           <div className="flex items-end gap-10">
             <div>
-              <p className="text-4xl font-bold text-blue-600 leading-none">{achieveRate}<span className="text-2xl font-semibold">%</span></p>
+              <p className="text-4xl font-bold text-primary-600 leading-none">{achieveRate}<span className="text-2xl font-semibold">%</span></p>
               <p className="text-xs text-gray-400 mt-1.5">지원 달성률</p>
             </div>
             <div>
-              <p className="text-4xl font-bold text-indigo-500 leading-none">{thisWeek}</p>
+              <p className="text-4xl font-bold text-primary-500 leading-none">{thisWeek}</p>
               <p className="text-xs text-gray-400 mt-1.5">이번 주 추가</p>
             </div>
             {urgent > 0 && (

@@ -94,10 +94,10 @@ export default function JobSearchModal({ onClose, onSelect }: Props) {
 
         {/* 구독 키워드 표시 */}
         {keywords.length > 0 && (
-          <div className="px-5 py-2.5 bg-indigo-50 border-b border-indigo-100 shrink-0 flex items-center gap-2 flex-wrap">
-            <span className="text-xs text-indigo-500 font-medium shrink-0">구독 필터:</span>
+          <div className="px-5 py-2.5 bg-primary-50 border-b border-primary-100 shrink-0 flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-primary-500 font-medium shrink-0">구독 필터:</span>
             {keywords.map((kw) => (
-              <span key={kw} className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">
+              <span key={kw} className="text-xs bg-primary-100 text-primary-700 px-2 py-0.5 rounded-full font-medium">
                 {kw}
               </span>
             ))}
@@ -111,7 +111,7 @@ export default function JobSearchModal({ onClose, onSelect }: Props) {
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             placeholder="회사명, 공고제목, 직종으로 검색..."
-            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-300"
+            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary-300"
             autoFocus
           />
         </div>
@@ -120,7 +120,7 @@ export default function JobSearchModal({ onClose, onSelect }: Props) {
         <div className="flex-1 overflow-y-auto">
           {loading && (
             <div className="flex items-center justify-center py-16">
-              <div className="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-primary-600 border-t-transparent rounded-full animate-spin" />
               <span className="ml-2 text-sm text-gray-500">전체 공고 불러오는 중...</span>
             </div>
           )}
@@ -169,8 +169,8 @@ export default function JobSearchModal({ onClose, onSelect }: Props) {
                       : hasError
                       ? 'bg-red-50 text-red-600 hover:bg-red-100'
                       : isLoading
-                      ? 'bg-indigo-100 text-indigo-400 cursor-wait'
-                      : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                      ? 'bg-primary-100 text-primary-400 cursor-wait'
+                      : 'bg-primary-600 text-white hover:bg-primary-700'
                   }`}
                 >
                   {added ? '추가됨 ✓' : isLoading ? '저장 중...' : hasError ? '재시도' : '+ 추가'}

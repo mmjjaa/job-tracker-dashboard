@@ -121,9 +121,9 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {/* 공고 텍스트 분석 섹션 */}
-          <div className="bg-indigo-50 rounded-xl p-4 space-y-2">
+          <div className="bg-primary-50 rounded-xl p-4 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-indigo-700">✨ 공고 텍스트 붙여넣기 → AI 자동 분석</span>
+              <span className="text-xs font-semibold text-primary-700">✨ 공고 텍스트 붙여넣기 → AI 자동 분석</span>
               {parsedFields.length > 0 && (
                 <span className="text-xs text-emerald-600 font-medium">
                   ✅ {parsedFields.join(', ')} 자동 입력됨
@@ -135,14 +135,14 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
               onChange={(e) => setPasteText(e.target.value)}
               placeholder="채용 공고 텍스트를 여기에 붙여넣으세요..."
               rows={4}
-              className="w-full text-xs border border-indigo-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300 resize-none bg-white"
+              className="w-full text-xs border border-primary-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-primary-300 resize-none bg-white"
             />
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={handleParse}
                 disabled={isParsing}
-                className="text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 disabled:opacity-50 font-medium"
+                className="text-xs bg-primary-600 text-white px-3 py-1.5 rounded-lg hover:bg-primary-700 disabled:opacity-50 font-medium"
               >
                 {isParsing ? '분석 중...' : 'AI 분석'}
               </button>
@@ -156,7 +156,7 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
                 required
                 value={form.company}
                 onChange={(e) => update('company', e.target.value)}
-                className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
+                className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-primary-300"
               />
             </label>
             <label className="block">
@@ -165,7 +165,7 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
                 required
                 value={form.position}
                 onChange={(e) => update('position', e.target.value)}
-                className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
+                className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-primary-300"
               />
             </label>
           </div>
@@ -176,7 +176,7 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
               value={form.url}
               onChange={(e) => update('url', e.target.value)}
               placeholder="https://..."
-              className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
+              className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-primary-300"
             />
           </label>
 
@@ -186,7 +186,7 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
               value={form.address}
               onChange={(e) => update('address', e.target.value)}
               placeholder="서울 강남구 테헤란로 123"
-              className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
+              className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-primary-300"
             />
           </label>
 
@@ -198,7 +198,7 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
                   type="button"
                   onClick={handleSuggest}
                   disabled={isSuggesting}
-                  className="text-xs text-indigo-600 hover:text-indigo-800 font-medium disabled:opacity-50"
+                  className="text-xs text-primary-600 hover:text-primary-800 font-medium disabled:opacity-50"
                 >
                   {isSuggesting ? '추천 중...' : '✨ AI 추천'}
                 </button>
@@ -207,7 +207,7 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
                 value={form.techStack}
                 onChange={(e) => update('techStack', e.target.value)}
                 placeholder="React, TypeScript..."
-                className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
+                className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-primary-300"
               />
               {suggestError && <p className="text-xs text-red-500 mt-1">{suggestError}</p>}
             </label>
@@ -217,7 +217,7 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
                 type="date"
                 value={form.deadline}
                 onChange={(e) => update('deadline', e.target.value)}
-                className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
+                className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-primary-300"
               />
             </label>
           </div>
@@ -227,7 +227,7 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
             <select
               value={form.status}
               onChange={(e) => update('status', e.target.value)}
-              className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
+              className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-primary-300"
             >
               {JOB_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
@@ -239,7 +239,7 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
               value={form.memo}
               onChange={(e) => update('memo', e.target.value)}
               rows={3}
-              className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+              className="mt-1 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-primary-300 resize-none"
             />
           </label>
 
@@ -258,7 +258,7 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 text-sm text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+              className="px-4 py-2 text-sm text-white bg-primary-600 rounded-lg hover:bg-primary-700 disabled:opacity-50"
             >
               {isSubmitting ? '저장 중...' : job ? '수정' : '추가'}
             </button>

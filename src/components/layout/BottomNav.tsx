@@ -25,15 +25,15 @@ export default function BottomNav({ page, onPageChange, onMoreOpen }: BottomNavP
             key={item.id}
             onClick={() => onPageChange(item.id)}
             className={`relative flex-1 flex flex-col items-center justify-center py-2.5 gap-0.5 transition-colors
-              ${isActive ? 'text-blue-600' : 'text-gray-400 active:text-gray-600'}`}
+              ${isActive ? 'text-primary-600' : 'text-gray-400 active:text-gray-600'}`}
           >
             {isActive && (
-              <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-blue-600 rounded-full" />
+              <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary-600 rounded-full" />
             )}
             <span className={`text-xl leading-none transition-transform ${isActive ? 'scale-110' : ''}`}>
               {item.icon}
             </span>
-            <span className={`text-[10px] font-medium leading-none ${isActive ? 'text-blue-600' : ''}`}>
+            <span className={`text-[10px] font-medium leading-none ${isActive ? 'text-primary-600' : ''}`}>
               {item.label}
             </span>
           </button>
