@@ -28,6 +28,8 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
   const [parsedFields, setParsedFields] = useState<string[]>([])
   const [isSuggesting, setIsSuggesting] = useState(false)
   const [suggestError, setSuggestError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
   const handleParse = async () => {
     if (!pasteText.trim()) {
@@ -78,8 +80,10 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitError('')
+    setIsSubmitting(true)
     const data = {
       company: form.company.trim(),
       position: form.position.trim(),
@@ -90,12 +94,18 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
       memo: form.memo.trim(),
       status: form.status,
     }
-    if (job) {
-      updateJob(job.id, data)
-    } else {
-      addJob(data)
+    try {
+      if (job) {
+        await updateJob(job.id, data)
+      } else {
+        await addJob(data)
+      }
+      onClose()
+    } catch (e) {
+      setSubmitError(e instanceof Error ? e.message : '저장에 실패했습니다')
+    } finally {
+      setIsSubmitting(false)
     }
-    onClose()
   }
 
   const update = (field: string, value: string) =>
@@ -233,19 +243,24 @@ export default function JobFormModal({ job, onClose }: JobFormModalProps) {
             />
           </label>
 
+          {submitError && (
+            <p className="text-xs text-red-500 bg-red-50 rounded-lg px-3 py-2">{submitError}</p>
+          )}
           <div className="flex gap-2 justify-end pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50"
+              disabled={isSubmitting}
+              className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
             >
               취소
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm text-white bg-indigo-600 rounded-lg hover:bg-indigo-700"
+              disabled={isSubmitting}
+              className="px-4 py-2 text-sm text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
             >
-              {job ? '수정' : '추가'}
+              {isSubmitting ? '저장 중...' : job ? '수정' : '추가'}
             </button>
           </div>
         </form>

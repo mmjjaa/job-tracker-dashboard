@@ -5,7 +5,7 @@ import type { Job } from '../../types'
 
 interface Props {
   onClose: () => void
-  onSelect: (job: Omit<Job, 'id' | 'createdAt'>) => void
+  onSelect: (job: Omit<Job, 'id' | 'createdAt'>) => Promise<void>
 }
 
 const PAGE_SIZE = 1000
@@ -17,6 +17,8 @@ export default function JobSearchModal({ onClose, onSelect }: Props) {
   const [error, setError] = useState('')
   const [keyword, setKeyword] = useState('')
   const [addedIds, setAddedIds] = useState<Set<string>>(new Set())
+  const [loadingId, setLoadingId] = useState<string | null>(null)
+  const [errorId, setErrorId] = useState<string | null>(null)
 
   useEffect(() => {
     setLoading(true)
@@ -50,7 +52,10 @@ export default function JobSearchModal({ onClose, onSelect }: Props) {
     return matchesKw && matchesSearch
   })
 
-  const handleAdd = (job: SeoulJob) => {
+  const handleAdd = async (job: SeoulJob) => {
+    const id = job.JO_REQST_NO
+    setLoadingId(id)
+    setErrorId(null)
     const mapped: Omit<Job, 'id' | 'createdAt'> = {
       company: job.CMPNY_NM,
       position: job.JO_SJ || job.JOBCODE_NM,
@@ -65,8 +70,14 @@ export default function JobSearchModal({ onClose, onSelect }: Props) {
       career: job.CAREER_CND_NM || '',
       wage: job.HOPE_WAGE?.trim() || '',
     }
-    onSelect(mapped)
-    setAddedIds((prev) => new Set(prev).add(job.JO_REQST_NO))
+    try {
+      await onSelect(mapped)
+      setAddedIds((prev) => new Set(prev).add(id))
+    } catch {
+      setErrorId(id)
+    } finally {
+      setLoadingId(null)
+    }
   }
 
   return (
@@ -121,6 +132,8 @@ export default function JobSearchModal({ onClose, onSelect }: Props) {
           )}
           {!loading && !error && filtered.map((job) => {
             const added = addedIds.has(job.JO_REQST_NO)
+            const isLoading = loadingId === job.JO_REQST_NO
+            const hasError = errorId === job.JO_REQST_NO
             return (
               <div
                 key={job.JO_REQST_NO}
@@ -143,17 +156,24 @@ export default function JobSearchModal({ onClose, onSelect }: Props) {
                       <span className="text-xs text-gray-500">📅 {job.RCEPT_CLOS_NM.replace('마감일 ', '')}</span>
                     )}
                   </div>
+                  {hasError && (
+                    <p className="text-xs text-red-500 mt-1">저장 실패. 다시 시도해 주세요.</p>
+                  )}
                 </div>
                 <button
                   onClick={() => handleAdd(job)}
-                  disabled={added}
+                  disabled={added || isLoading}
                   className={`shrink-0 text-xs px-3 py-1.5 rounded-lg font-medium transition-colors ${
                     added
                       ? 'bg-emerald-50 text-emerald-600 cursor-default'
+                      : hasError
+                      ? 'bg-red-50 text-red-600 hover:bg-red-100'
+                      : isLoading
+                      ? 'bg-indigo-100 text-indigo-400 cursor-wait'
                       : 'bg-indigo-600 text-white hover:bg-indigo-700'
                   }`}
                 >
-                  {added ? '추가됨 ✓' : '+ 추가'}
+                  {added ? '추가됨 ✓' : isLoading ? '저장 중...' : hasError ? '재시도' : '+ 추가'}
                 </button>
               </div>
             )
