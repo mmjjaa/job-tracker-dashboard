@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { useJobStore } from '../../store/jobStore'
 import Tooltip from '../ui/Tooltip'
+import { useInstallPrompt } from '../../hooks/useInstallPrompt'
 
 type ViewMode = 'table' | 'kanban'
 type PageType = 'dashboard' | 'calendar' | 'jobs'
@@ -30,6 +31,7 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
   const addKeyword = useJobStore((s) => s.addKeyword)
   const removeKeyword = useJobStore((s) => s.removeKeyword)
 
+  const { canInstall, install } = useInstallPrompt()
   const [menuOpen, setMenuOpen] = useState(false)
   const [kwInput, setKwInput] = useState('')
   const [kwInputOpen, setKwInputOpen] = useState(false)
@@ -103,6 +105,18 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
                 </button>
               </Tooltip>
             </div>
+          )}
+
+          {/* 앱 설치 버튼 */}
+          {canInstall && (
+            <Tooltip text="홈 화면에 앱으로 설치해요">
+              <button
+                onClick={install}
+                className="hidden md:flex items-center gap-1.5 text-blue-600 hover:text-blue-700 text-sm border border-blue-200 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg transition-colors font-medium"
+              >
+                ⬇️ 앱 설치
+              </button>
+            </Tooltip>
           )}
 
           {/* 내보내기 */}
