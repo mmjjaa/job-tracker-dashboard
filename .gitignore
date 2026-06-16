@@ -15,6 +15,22 @@ dist-ssr
 .env.*
 !.env.example
 
+# Playwright & 작업용 스크린샷 (루트)
+.playwright-mcp/
+dev-dist/
+*-check.png
+*-screenshot.png
+*-final.png
+*-final-check.png
+step*.png
+tooltip-*.png
+rocketpunch-*.png
+pixso-*.png
+sidebar-*.png
+kakao-*.png
+icon192-*.png
+icon32-*.png
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
