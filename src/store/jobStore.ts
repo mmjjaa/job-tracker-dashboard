@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { supabase } from '../lib/supabase'
 import type { Job, JobStatus } from '../types'
+import type { AgentSuggestion } from '../api/claude'
 
 export interface UserProfile {
   techStack: string[]
@@ -23,11 +24,22 @@ const DEFAULT_PROFILE: UserProfile = {
   introduction: '',
 }
 
+export interface AgentLogEntry {
+  id: string
+  jobId: string
+  action: AgentSuggestion['action']
+  result: 'accepted' | 'dismissed'
+  timestamp: string
+}
+
 interface JobStore {
   jobs: Job[]
   loading: boolean
   keywords: string[]
   profile: UserProfile
+  agentSuggestions: AgentSuggestion[]
+  agentLastRun: string | null
+  agentLog: AgentLogEntry[]
   fetchJobs: () => Promise<void>
   addJob: (job: Omit<Job, 'id' | 'createdAt'>) => Promise<void>
   updateJob: (id: string, updates: Partial<Omit<Job, 'id' | 'createdAt'>>) => Promise<void>
@@ -37,6 +49,9 @@ interface JobStore {
   removeKeyword: (kw: string) => void
   updateProfile: (p: UserProfile) => void
   toggleStar: (id: string) => void
+  setAgentSuggestions: (suggestions: AgentSuggestion[]) => void
+  dismissSuggestion: (jobId: string) => void
+  logAgentAction: (entry: Omit<AgentLogEntry, 'id' | 'timestamp'>) => void
 }
 
 function toRow(job: Omit<Job, 'id' | 'createdAt'>, userId: string) {
@@ -90,6 +105,9 @@ export const useJobStore = create<JobStore>()(
       loading: false,
       keywords: [],
       profile: DEFAULT_PROFILE,
+      agentSuggestions: [],
+      agentLastRun: null,
+      agentLog: [],
 
       fetchJobs: async () => {
         const user = await getUser()
@@ -130,7 +148,8 @@ export const useJobStore = create<JobStore>()(
           .insert(toRow(job, user.id))
           .select()
           .single()
-        if (!error && data) set((s) => ({ jobs: [fromRow(data), ...s.jobs] }))
+        if (error) throw new Error(error.message)
+        if (data) set((s) => ({ jobs: [fromRow(data), ...s.jobs] }))
       },
 
       updateJob: async (id, updates) => {
@@ -170,7 +189,8 @@ export const useJobStore = create<JobStore>()(
 
         const { data, error } = await supabase
           .from('jobs').update(patch).eq('id', id).select().single()
-        if (!error && data) {
+        if (error) throw new Error(error.message)
+        if (data) {
           const prev = get().jobs.find((j) => j.id === id)
           set((s) => ({
             jobs: s.jobs.map((j) =>
@@ -223,6 +243,22 @@ export const useJobStore = create<JobStore>()(
       toggleStar: (id) =>
         set((s) => ({
           jobs: s.jobs.map((j) => (j.id === id ? { ...j, starred: !j.starred } : j)),
+        })),
+
+      setAgentSuggestions: (suggestions) =>
+        set({ agentSuggestions: suggestions, agentLastRun: new Date().toISOString() }),
+
+      dismissSuggestion: (jobId) =>
+        set((s) => ({
+          agentSuggestions: s.agentSuggestions.filter((sg) => sg.jobId !== jobId),
+        })),
+
+      logAgentAction: (entry) =>
+        set((s) => ({
+          agentLog: [
+            { ...entry, id: crypto.randomUUID(), timestamp: new Date().toISOString() },
+            ...s.agentLog.slice(0, 49),
+          ],
         })),
 
       // persist 미들웨어가 사용하지만 직접 호출은 안 함

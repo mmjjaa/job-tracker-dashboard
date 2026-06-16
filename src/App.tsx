@@ -6,6 +6,7 @@ import AuthPage from './components/auth/AuthPage'
 import Sidebar from './components/layout/Sidebar'
 import Header from './components/layout/Header'
 import StatsSection from './components/dashboard/StatsSection'
+import AgentLoopCard from './components/dashboard/AgentLoopCard'
 import ChartSection from './components/dashboard/ChartSection'
 import CalendarSection from './components/dashboard/CalendarSection'
 import MapSection from './components/dashboard/MapSection'
@@ -15,6 +16,8 @@ import JobFormModal from './components/jobs/JobFormModal'
 import JobSearchModal from './components/jobs/JobSearchModal'
 import ProfileModal from './components/profile/ProfileModal'
 import JobDetailModal from './components/jobs/JobDetailModal'
+import BottomNav from './components/layout/BottomNav'
+import MobileMoreSheet from './components/layout/MobileMoreSheet'
 import { GoogleCalendarProvider } from './contexts/GoogleCalendarContext'
 import type { Job } from './types'
 
@@ -36,6 +39,7 @@ export default function App() {
   const [page, setPage] = useState<PageType>('dashboard')
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [starDetailJob, setStarDetailJob] = useState<Job | null>(null)
+  const [isMobileMoreOpen, setIsMobileMoreOpen] = useState(false)
   const fetchJobs = useJobStore((s) => s.fetchJobs)
 
   useEffect(() => {
@@ -62,8 +66,8 @@ export default function App() {
     setIsModalOpen(true)
   }
 
-  const handleSearchSelect = (job: Omit<Job, 'id' | 'createdAt'>) => {
-    addJob(job)
+  const handleSearchSelect = async (job: Omit<Job, 'id' | 'createdAt'>) => {
+    await addJob(job)
   }
 
   const handleEdit = (job: Job) => {
@@ -125,10 +129,11 @@ export default function App() {
             page={page}
             onPageChange={setPage}
           />
-          <main className="flex-1 overflow-y-auto p-6 space-y-6">
+          <main className="flex-1 overflow-y-auto p-6 pb-20 md:pb-6 space-y-6">
             {page === 'dashboard' && (
               <>
                 <StatsSection />
+                <AgentLoopCard />
                 <ChartSection />
                 <MapSection />
               </>
@@ -153,6 +158,17 @@ export default function App() {
           <JobSearchModal
             onClose={() => setIsSearchOpen(false)}
             onSelect={handleSearchSelect}
+          />
+        )}
+        <BottomNav page={page} onPageChange={setPage} onMoreOpen={() => setIsMobileMoreOpen(true)} />
+        {isMobileMoreOpen && (
+          <MobileMoreSheet
+            onClose={() => setIsMobileMoreOpen(false)}
+            onProfileOpen={() => setIsProfileOpen(true)}
+            onJobDetail={(job) => setStarDetailJob(job)}
+            onSignOut={isGuest ? () => setIsGuest(false) : handleSignOut}
+            isGuest={isGuest}
+            userEmail={isGuest ? '게스트 모드' : (session?.user.email ?? '')}
           />
         )}
         {isProfileOpen && <ProfileModal onClose={() => setIsProfileOpen(false)} />}

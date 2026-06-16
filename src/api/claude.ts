@@ -210,6 +210,91 @@ score는 0~100 정수.`;
   return JSON.parse(match[0]) as MatchResult;
 }
 
+export type AgentActionType = 'cover_letter' | 'calendar' | 'status_change' | 'apply_now'
+
+export interface AgentSuggestion {
+  jobId: string
+  company: string
+  position: string
+  dday: number
+  action: AgentActionType
+  reason: string
+  priority: 'high' | 'medium' | 'low'
+}
+
+export async function analyzeUrgentJobs(
+  jobs: {
+    id: string
+    company: string
+    position: string
+    status: string
+    deadline: string | null
+    coverLetter: unknown
+    calendarEventId?: string
+  }[]
+): Promise<AgentSuggestion[]> {
+  const apiKey = import.meta.env.VITE_CLAUDE_API_KEY
+
+  const jobList = jobs.map((j) => {
+    const diff = j.deadline
+      ? Math.ceil((new Date(j.deadline).getTime() - Date.now()) / 86400000)
+      : null
+    return `- id:${j.id} | 회사:${j.company} | 포지션:${j.position} | 상태:${j.status} | D-Day:${diff ?? '없음'} | 자소서:${j.coverLetter ? '작성됨' : '미작성'} | 캘린더:${j.calendarEventId ? '등록됨' : '미등록'}`
+  }).join('\n')
+
+  const prompt = `너는 취업 준비를 도와주는 AI 에이전트야. 아래 마감 임박 공고들을 분석해서 각 공고에 대해 가장 중요한 액션 1개씩을 추천해줘.
+
+공고 목록:
+${jobList}
+
+액션 유형:
+- cover_letter: 자소서가 미작성이고 마감이 가까울 때
+- calendar: 캘린더에 미등록된 공고
+- status_change: 상태가 '관심'인데 마감이 3일 이내일 때
+- apply_now: 지원 완료하지 않았고 마감이 1일 이내일 때
+
+priority 기준:
+- high: D-3 이내
+- medium: D-4 ~ D-7
+- low: 그 외
+
+JSON 배열로만 반환 (다른 텍스트 없이):
+[
+  {
+    "jobId": "id값",
+    "company": "회사명",
+    "position": "포지션명",
+    "dday": 3,
+    "action": "cover_letter",
+    "reason": "마감 3일 전인데 자소서가 아직 작성되지 않았어요",
+    "priority": "high"
+  }
+]`
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 800,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+  })
+
+  if (!res.ok) throw new Error(`API 오류 ${res.status}`)
+
+  const data = await res.json()
+  const content = data.content[0].text as string
+  const match = content.match(/\[[\s\S]*\]/)
+  if (!match) return []
+  return JSON.parse(match[0]) as AgentSuggestion[]
+}
+
 export async function suggestTechStack(
   company: string,
   position: string,
