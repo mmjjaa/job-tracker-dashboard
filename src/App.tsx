@@ -9,7 +9,6 @@ import StatsSection from './components/dashboard/StatsSection'
 import AgentLoopCard from './components/dashboard/AgentLoopCard'
 import ChartSection from './components/dashboard/ChartSection'
 import CalendarSection from './components/dashboard/CalendarSection'
-import MapSection from './components/dashboard/MapSection'
 import JobTable from './components/jobs/JobTable'
 import KanbanBoard from './components/jobs/KanbanBoard'
 import JobFormModal from './components/jobs/JobFormModal'
@@ -135,7 +134,6 @@ export default function App() {
                 <StatsSection />
                 <AgentLoopCard />
                 <ChartSection />
-                <MapSection />
               </>
             )}
             {page === 'calendar' && (
