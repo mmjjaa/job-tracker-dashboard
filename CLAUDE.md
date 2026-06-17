@@ -35,6 +35,8 @@ src/
 │   ├── claude.ts              # Claude API 호출 (파싱·추천·자소서)
 │   └── seoulJobs.ts           # 서울 공공데이터 채용공고 검색
 ├── components/
+│   ├── onboarding/
+│   │   └── OnboardingModal.tsx        # 최초 방문 5단계 온보딩
 │   ├── auth/
 │   │   └── AuthPage.tsx
 │   ├── layout/

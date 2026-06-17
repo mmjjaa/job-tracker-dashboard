@@ -18,6 +18,7 @@ import JobDetailModal from './components/jobs/JobDetailModal'
 import BottomNav from './components/layout/BottomNav'
 import MobileMoreSheet from './components/layout/MobileMoreSheet'
 import { GoogleCalendarProvider } from './contexts/GoogleCalendarContext'
+import OnboardingModal, { isOnboardingDone } from './components/onboarding/OnboardingModal'
 import type { Job } from './types'
 
 type ViewMode = 'table' | 'kanban'
@@ -39,6 +40,7 @@ export default function App() {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [starDetailJob, setStarDetailJob] = useState<Job | null>(null)
   const [isMobileMoreOpen, setIsMobileMoreOpen] = useState(false)
+  const [isOnboarding, setIsOnboarding] = useState(false)
   const fetchJobs = useJobStore((s) => s.fetchJobs)
 
   useEffect(() => {
@@ -47,8 +49,9 @@ export default function App() {
       setAuthLoading(false)
     })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session)
+      if (event === 'SIGNED_IN' && !isOnboardingDone()) setIsOnboarding(true)
     })
 
     return () => subscription.unsubscribe()
@@ -96,7 +99,13 @@ export default function App() {
     )
   }
 
-  if (!session && !isGuest) return <AuthPage onGuestStart={() => setIsGuest(true)} />
+  if (!session && !isGuest) return (
+    <AuthPage onGuestStart={() => {
+      setIsGuest(true)
+      if (!isOnboardingDone()) setIsOnboarding(true)
+    }} />
+  )
+
 
   return (
     <GoogleCalendarProvider>
@@ -170,6 +179,7 @@ export default function App() {
           />
         )}
         {isProfileOpen && <ProfileModal onClose={() => setIsProfileOpen(false)} />}
+        {isOnboarding && <OnboardingModal onClose={() => setIsOnboarding(false)} />}
         {starDetailJob && (
           <JobDetailModal
             job={starDetailJob}
