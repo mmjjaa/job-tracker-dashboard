@@ -50,7 +50,7 @@ src/
 │   │   ├── TechStackChart.tsx
 │   │   ├── WeeklyBarChart.tsx
 │   │   ├── CalendarSection.tsx
-│   │   └── AgentLoopCard.tsx
+│   │   └── DailyBriefingCard.tsx
 │   ├── jobs/
 │   │   ├── JobTable.tsx
 │   │   ├── KanbanBoard.tsx
@@ -66,7 +66,7 @@ src/
 ├── contexts/
 │   └── GoogleCalendarContext.tsx  # Google OAuth2 토큰 관리
 ├── hooks/
-│   ├── useAgentLoop.ts
+│   ├── useDailyBriefing.ts
 │   └── useInstallPrompt.ts
 ├── lib/
 │   ├── supabase.ts            # Supabase 클라이언트

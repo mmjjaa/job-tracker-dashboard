@@ -6,7 +6,7 @@ import AuthPage from './components/auth/AuthPage'
 import Sidebar from './components/layout/Sidebar'
 import Header from './components/layout/Header'
 import StatsSection from './components/dashboard/StatsSection'
-import AgentLoopCard from './components/dashboard/AgentLoopCard'
+import DailyBriefingCard from './components/dashboard/DailyBriefingCard'
 import ChartSection from './components/dashboard/ChartSection'
 import CalendarSection from './components/dashboard/CalendarSection'
 import JobTable from './components/jobs/JobTable'
@@ -132,7 +132,7 @@ export default function App() {
             {page === 'dashboard' && (
               <>
                 <StatsSection />
-                <AgentLoopCard />
+                <DailyBriefingCard />
                 <ChartSection />
               </>
             )}

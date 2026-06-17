@@ -2,24 +2,24 @@ import { useState, useCallback } from 'react'
 import { useJobStore } from '../store/jobStore'
 import { analyzeUrgentJobs } from '../api/claude'
 
-const LOOP_COOLDOWN_MS = 1000 * 60 * 5 // 5분 쿨다운
+const BRIEFING_COOLDOWN_MS = 1000 * 60 * 5 // 5분 쿨다운
 
-export type LoopPhase = 'idle' | 'detecting' | 'analyzing' | 'done' | 'error'
+export type BriefingPhase = 'idle' | 'detecting' | 'analyzing' | 'done' | 'error'
 
-export function useAgentLoop() {
+export function useDailyBriefing() {
   const jobs = useJobStore((s) => s.jobs)
   const agentLastRun = useJobStore((s) => s.agentLastRun)
   const agentSuggestions = useJobStore((s) => s.agentSuggestions)
   const setAgentSuggestions = useJobStore((s) => s.setAgentSuggestions)
 
-  const [phase, setPhase] = useState<LoopPhase>('idle')
+  const [phase, setPhase] = useState<BriefingPhase>('idle')
   const [urgentCount, setUrgentCount] = useState(0)
   const [error, setError] = useState<string | null>(null)
 
   const elapsed = agentLastRun ? Date.now() - new Date(agentLastRun).getTime() : Infinity
-  const canRun = elapsed > LOOP_COOLDOWN_MS
+  const canRun = elapsed > BRIEFING_COOLDOWN_MS
   const nextRunTime = agentLastRun && !canRun
-    ? new Date(new Date(agentLastRun).getTime() + LOOP_COOLDOWN_MS)
+    ? new Date(new Date(agentLastRun).getTime() + BRIEFING_COOLDOWN_MS)
     : null
 
   const run = useCallback(async () => {

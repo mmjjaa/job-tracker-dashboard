@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useAgentLoop } from '../../hooks/useAgentLoop'
+import { useDailyBriefing } from '../../hooks/useDailyBriefing'
 import { useJobStore } from '../../store/jobStore'
 import { useGoogleCalendar } from '../../contexts/GoogleCalendarContext'
 import { createCalendarEvent } from '../../lib/googleCalendar'
@@ -28,8 +28,8 @@ const PHASE_LABEL: Record<string, string> = {
   error:     '오류 발생',
 }
 
-export default function AgentLoopCard() {
-  const { phase, urgentCount, canRun, nextRunTime, suggestions, error, run, reset } = useAgentLoop()
+export default function DailyBriefingCard() {
+  const { phase, urgentCount, canRun, nextRunTime, suggestions, error, run, reset } = useDailyBriefing()
   const jobs = useJobStore((s) => s.jobs)
   const agentLastRun = useJobStore((s) => s.agentLastRun)
   const dismissSuggestion = useJobStore((s) => s.dismissSuggestion)
@@ -101,7 +101,7 @@ export default function AgentLoopCard() {
               🤖
             </div>
             <div>
-              <p className="text-sm font-bold text-gray-900">AI 에이전트 루프</p>
+              <p className="text-sm font-bold text-gray-900">데일리 브리핑</p>
               <p className="text-xs text-gray-400">
                 {agentLastRun
                   ? `마지막 실행: ${new Date(agentLastRun).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}`
@@ -127,7 +127,7 @@ export default function AgentLoopCard() {
                   disabled={!canRun && phase !== 'error'}
                   className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  {phase === 'error' ? '재시도' : '루프 실행'}
+                  {phase === 'error' ? '재시도' : '브리핑 시작'}
                 </button>
                 {nextRunTime && (
                   <p className="text-[10px] text-gray-400">
@@ -181,7 +181,7 @@ export default function AgentLoopCard() {
             <div className="flex items-center gap-4 py-4">
               <div className="text-3xl">🔍</div>
               <div>
-                <p className="text-sm font-semibold text-gray-700">루프를 실행해보세요</p>
+                <p className="text-sm font-semibold text-gray-700">브리핑을 시작해보세요</p>
                 <p className="text-xs text-gray-400 mt-0.5">마감 임박 공고를 자동 감지하고 AI가 액션을 제안해요</p>
               </div>
             </div>
