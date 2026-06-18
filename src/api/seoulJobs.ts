@@ -23,7 +23,7 @@ interface SeoulApiResponse {
 
 export async function fetchSeoulJobs(start: number, end: number): Promise<{ total: number; jobs: SeoulJob[] }> {
   const key = import.meta.env.VITE_SEOUL_API_KEY?.trim()
-  const res = await fetch(`/api/seoul/${key}/json/GetJobInfo/${start}/${end}/`)
+  const res = await fetch(`/api/seoul?key=${key}&start=${start}&end=${end}`)
   if (!res.ok) throw new Error('API 호출 실패')
   const data: SeoulApiResponse = await res.json()
   const info = data.GetJobInfo
