@@ -9,7 +9,9 @@ export interface ParsedJob {
 export async function parseJobPosting(text: string): Promise<ParsedJob> {
   const apiKey = import.meta.env.VITE_CLAUDE_API_KEY;
 
-  const prompt = `아래는 채용 공고 텍스트야. 다음 정보를 추출해줘.
+  const prompt = `너는 글로벌 IT 기업 10년차 HR 담당자야. 수천 개의 채용 공고를 분석한 경험으로 핵심 정보를 정확하게 추출해줘.
+
+아래는 채용 공고 텍스트야. 다음 정보를 추출해줘.
 
 공고 텍스트:
 ${text}
@@ -65,7 +67,9 @@ export async function generateCoverLetter(
 ): Promise<CoverLetter> {
   const apiKey = import.meta.env.VITE_CLAUDE_API_KEY;
 
-  const prompt = `회사: ${company}
+  const prompt = `너는 국내외 대기업 합격 자소서를 100편 이상 코칭한 10년차 취업 컨설턴트야. 지원자의 경험을 공고에 맞게 설득력 있는 문장으로 다듬어줘.
+
+회사: ${company}
 포지션: ${position}
 기술스택: ${techStack.join(", ")}
 공고 요약: ${memo || "없음"}
@@ -145,7 +149,7 @@ export async function analyzeJobMatch(
 ): Promise<MatchResult> {
   const apiKey = import.meta.env.VITE_CLAUDE_API_KEY;
 
-  const prompt = `너는 채용 전문가야. 아래 지원자 프로필과 채용 공고를 비교해서 적합도를 분석해줘.
+  const prompt = `너는 글로벌 기업 10년차 채용 전문가야. 지원자 프로필과 채용 공고를 냉정하고 객관적으로 비교해서 실질적인 합격 가능성을 분석해줘.
 
 [지원자 프로필]
 - 기술스택: ${profile.techStack.join(", ") || "미입력"}
@@ -265,7 +269,7 @@ export async function analyzeUrgentJobs(
     `- id:${j.id} | 회사:${j.company} | 포지션:${j.position} | D-${j.dday} | 액션:${j.action}`
   ).join('\n')
 
-  const prompt = `너는 취업 준비 AI 에이전트야. 아래 공고별로 지정된 액션에 맞는 짧은 이유를 한 문장으로 작성해줘.
+  const prompt = `너는 수백 명의 취준생을 합격시킨 10년차 취업 코치야. 아래 공고별로 지정된 액션에 맞는 짧은 이유를 한 문장으로 작성해줘.
 
 액션 의미:
 - cover_letter: 자소서 미작성
@@ -319,7 +323,9 @@ export async function suggestTechStack(
 ): Promise<string[]> {
   const apiKey = import.meta.env.VITE_CLAUDE_API_KEY;
 
-  const prompt = `회사: ${company}
+  const prompt = `너는 국내외 IT 기업 기술스택을 꿰뚫고 있는 10년차 시니어 개발자야. 실제 채용 공고와 기술 블로그 기반으로 정확한 스택을 추천해줘.
+
+회사: ${company}
 포지션: ${position}
 
 이 회사의 이 포지션에서 실제로 사용하는 기술스택을 추천해줘.
