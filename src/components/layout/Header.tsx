@@ -134,7 +134,7 @@ export default function Header({ onAddJob, onSearchJob, view, onViewChange, user
             <Tooltip text="서울시 공공 API로 공고를 검색해요">
               <button
                 onClick={onSearchJob}
-                className="hidden md:flex items-center gap-1.5 text-gray-600 hover:text-primary-600 text-sm border border-gray-200 px-3 py-2 rounded-lg hover:bg-primary-50 transition-colors font-medium"
+                className="flex items-center gap-1.5 text-gray-600 hover:text-primary-600 text-sm border border-gray-200 px-3 py-2 rounded-lg hover:bg-primary-50 transition-colors font-medium"
               >
                 🔍 공고 검색
                 {keywords.length > 0 && (

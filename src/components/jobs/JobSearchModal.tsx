@@ -12,6 +12,7 @@ const PAGE_SIZE = 1000
 
 export default function JobSearchModal({ onClose, onSelect }: Props) {
   const keywords = useJobStore((s) => s.keywords)
+  const existingJobs = useJobStore((s) => s.jobs)
   const [jobs, setJobs] = useState<SeoulJob[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -19,6 +20,14 @@ export default function JobSearchModal({ onClose, onSelect }: Props) {
   const [addedIds, setAddedIds] = useState<Set<string>>(new Set())
   const [loadingId, setLoadingId] = useState<string | null>(null)
   const [errorId, setErrorId] = useState<string | null>(null)
+
+  const isAlreadyAdded = (job: SeoulJob) => {
+    const company = job.CMPNY_NM.toLowerCase()
+    const position = (job.JO_SJ || job.JOBCODE_NM).toLowerCase()
+    return existingJobs.some(
+      (j) => j.company.toLowerCase() === company && j.position.toLowerCase() === position
+    )
+  }
 
   useEffect(() => {
     setLoading(true)
@@ -131,7 +140,7 @@ export default function JobSearchModal({ onClose, onSelect }: Props) {
             <p className="text-center py-16 text-sm text-gray-500 font-medium">검색 결과가 없습니다</p>
           )}
           {!loading && !error && filtered.map((job) => {
-            const added = addedIds.has(job.JO_REQST_NO)
+            const added = addedIds.has(job.JO_REQST_NO) || isAlreadyAdded(job)
             const isLoading = loadingId === job.JO_REQST_NO
             const hasError = errorId === job.JO_REQST_NO
             return (
